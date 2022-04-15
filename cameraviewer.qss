@@ -17,7 +17,6 @@ QWidget{
 /*  Scroll Area */
 
 #Left_Scroll_area {
-    border: 1px solid lightgray;
     background-color: rgb(33, 37, 43);
 }
 
