@@ -5,6 +5,7 @@
 #include <QPainterPath>
 #include <QPainter>
 #include <QGraphicsScene>
+#include <QGraphicsPixmapItem>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -21,6 +22,15 @@ MainWindow::MainWindow(QWidget *parent)
     on_button_scene->addPath(on_button_path,QPen(Qt::red),QBrush(Qt::red));
     ui->graphicsView_2->setScene(on_button_scene);
     ui->graphicsView_2->show();
+
+
+    camera_view_scene = new QGraphicsScene(this);
+
+    QImage myimage = QImage(640,480,QImage::Format_Grayscale8);
+    myimage.fill(Qt::black);
+    camera_view_pixmap = camera_view_scene->addPixmap(QPixmap::fromImage(myimage));
+    ui->graphicsView->setScene(camera_view_scene);
+    ui->graphicsView->show();
 }
 
 MainWindow::~MainWindow()

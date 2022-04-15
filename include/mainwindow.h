@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QGraphicsScene>
+#include <QGraphicsPixmapItem>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -20,5 +21,7 @@ private:
     Ui::MainWindow *ui;
     void drawConnected();
     QGraphicsScene* on_button_scene;
+    QGraphicsScene* camera_view_scene;
+    QGraphicsPixmapItem* camera_view_pixmap;
 };
 #endif // MAINWINDOW_H

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(CamerViewer VERSION 0.1 LANGUAGES CXX)
+project(CameraViewer VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -15,6 +15,21 @@ include_directories("include")
 
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Multimedia)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS MultimediaWidgets)
+
+set(FFMPEG_PATH "C:\\Users\\wanglab\\Downloads\\ffmpeg-5.0-full_build-shared\\lib")
+
+find_library(AVCODEC_LIBRARY avcodec HINTS ${FFMPEG_PATH})
+find_library(AVFORMAT_LIBRARY avformat HINTS ${FFMPEG_PATH})
+find_library(AVUTIL_LIBRARY avutil HINTS ${FFMPEG_PATH})
+find_library(AVFILTER_LIBRARY avfilter HINTS ${FFMPEG_PATH})
+find_library(SWSCALE_LIBRARY swscale HINTS ${FFMPEG_PATH})
+find_library(SWRESAMPLE_LIBRARY swresample HINTS ${FFMPEG_PATH})
+
+include_directories("C:\\Users\\wanglab\\Documents\\ffmpeg_wrapper\\headers")
+
+find_library(FFMPEG_WRAPPER_LIBRARY ffmpeg_wrapper HINTS "C:\\Users\\wanglab\\Documents\\ffmpeg_wrapper\\build")
 
 set(PROJECT_SOURCES
         src/main.cpp
@@ -28,31 +43,43 @@ set(PROJECT_SOURCES
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(CamerViewer
+    qt_add_executable(CameraViewer
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
 # Define target properties for Android with Qt 6 as:
-#    set_property(TARGET CamerViewer APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
+#    set_property(TARGET CameraViewer APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
 # For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
 else()
     if(ANDROID)
-        add_library(CamerViewer SHARED
+        add_library(CameraViewer SHARED
             ${PROJECT_SOURCES}
         )
 # Define properties for Android with Qt 5 after find_package() calls as:
 #    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
     else()
-        add_executable(CamerViewer
+        add_executable(CameraViewer
             ${PROJECT_SOURCES}
         )
     endif()
 endif()
 
-target_link_libraries(CamerViewer PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(CameraViewer PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(CameraViewer PRIVATE Qt${QT_VERSION_MAJOR}::Multimedia)
+target_link_libraries(CameraViewer PRIVATE Qt${QT_VERSION_MAJOR}::MultimediaWidgets)
 
-set_target_properties(CamerViewer PROPERTIES
+target_link_libraries(CameraViewer PRIVATE
+    ${AVCODEC_LIBRARY}
+    ${AVFORMAT_LIBRARY}
+    ${AVUTIL_LIBRARY}
+    ${AVFILTER_LIBRARY}
+    ${SWSCALE_LIBRARY}
+    ${SWRESAMPLE_LIBRARY}
+    ${FFMPEG_WRAPPER_LIBRARY}
+)
+
+set_target_properties(CameraViewer PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
@@ -61,5 +88,5 @@ set_target_properties(CamerViewer PROPERTIES
 )
 
 if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(CamerViewer)
+    qt_finalize_executable(CameraViewer)
 endif()
