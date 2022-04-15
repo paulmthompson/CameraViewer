@@ -21,6 +21,8 @@ set(PROJECT_SOURCES
         src/mainwindow.cpp
         include/mainwindow.h
         src/mainwindow.ui
+        cameraviewer.qss
+        cameraviewer.qrc
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

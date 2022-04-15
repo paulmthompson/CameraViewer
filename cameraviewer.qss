@@ -1,0 +1,47 @@
+
+QWidget{
+        color: rgb(221, 221, 221);
+        font: 10pt "Segoe UI";
+}
+
+#Whole_Frame {
+        background-color: rgb(40, 44, 52);
+
+}
+
+#Left_Panel {
+        background-color: rgb(33, 37, 43);
+
+}
+
+/*  Scroll Area */
+
+#Left_Scroll_area {
+    border: 1px solid lightgray;
+    background-color: rgb(33, 37, 43);
+}
+
+#Left_Scroll_area QScrollBar:Vertical {
+    background-color: yellow;
+    width: 20px;
+}
+
+
+#Left_Scroll_area QScrollBar::handle:vertical {
+    background-color: rgb(0, 0, 0);
+    min-height: 30px;
+    border-radius: 7px;
+
+}
+
+/*
+#Left_Scroll_area QScrollBar::handle:vertical:hover {
+    background-color: rgb(80, 80, 122);
+}
+*/
+
+/*
+#Left_Scroll_area QScrollBar::sub-line:vertical {
+    height: 15px;
+}
+*/
