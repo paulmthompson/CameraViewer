@@ -44,9 +44,6 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="verticalScrollBarPolicy">
-      <enum>Qt::ScrollBarAlwaysOn</enum>
-     </property>
      <property name="horizontalScrollBarPolicy">
       <enum>Qt::ScrollBarAlwaysOff</enum>
      </property>
@@ -58,7 +55,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>242</width>
+        <width>259</width>
         <height>539</height>
        </rect>
       </property>
@@ -70,7 +67,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>241</width>
+         <width>261</width>
          <height>1000</height>
         </rect>
        </property>
@@ -80,52 +77,13 @@
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>
        </property>
-       <widget class="QLabel" name="label">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>49</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Camera: </string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="CameraSerial">
-        <property name="geometry">
-         <rect>
-          <x>120</x>
-          <y>30</y>
-          <width>49</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_2">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>30</y>
-          <width>91</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Serial Number:</string>
-        </property>
-       </widget>
-       <widget class="QFrame" name="frame_3">
+       <widget class="QFrame" name="camera_info_frame">
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>10</y>
-          <width>231</width>
-          <height>81</height>
+          <y>0</y>
+          <width>261</width>
+          <height>111</height>
          </rect>
         </property>
         <property name="frameShape">
@@ -137,8 +95,8 @@
         <widget class="QGraphicsView" name="graphicsView_2">
          <property name="geometry">
           <rect>
-           <x>180</x>
-           <y>10</y>
+           <x>190</x>
+           <y>70</y>
            <width>30</width>
            <height>30</height>
           </rect>
@@ -148,6 +106,76 @@
          </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_2">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>40</y>
+           <width>91</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Serial Number:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>60</y>
+           <width>91</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Camera Model: </string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_3">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>80</y>
+           <width>91</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Connection :</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_4">
+         <property name="geometry">
+          <rect>
+           <x>80</x>
+           <y>10</y>
+           <width>111</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Camera Info</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="CameraSerial">
+         <property name="geometry">
+          <rect>
+           <x>130</x>
+           <y>40</y>
+           <width>49</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
          </property>
         </widget>
        </widget>
