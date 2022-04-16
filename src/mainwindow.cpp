@@ -48,5 +48,4 @@ void MainWindow::drawConnected() {
 
     on_button_scene->addPath(on_button_path,QPen(Qt::green),QBrush(Qt::green));
 
-    //ui->Left_Scroll_area->verticalScrollBar
 }

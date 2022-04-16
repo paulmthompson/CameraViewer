@@ -5,8 +5,8 @@
 #include <vector>
 
 // #include "video_encoder.h"
-// #include <pylon/PylonIncludes.h>
-// #include <pylon/usb/BaslerUsbInstantCamera.h>
+#include <pylon/PylonIncludes.h>
+#include <pylon/usb/BaslerUsbInstantCamera.h>
 
 class Camera {
 public:

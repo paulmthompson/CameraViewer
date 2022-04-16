@@ -19,6 +19,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Multimedia)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS MultimediaWidgets)
 
 set(FFMPEG_PATH "C:\\Users\\wanglab\\Downloads\\ffmpeg-5.0-full_build-shared\\lib")
+set(BASLER_PATH "C:\\Program\ Files\\Basler\\pylon\ 6\\Development\\lib\\x64")
 
 find_library(AVCODEC_LIBRARY avcodec HINTS ${FFMPEG_PATH})
 find_library(AVFORMAT_LIBRARY avformat HINTS ${FFMPEG_PATH})
@@ -27,7 +28,13 @@ find_library(AVFILTER_LIBRARY avfilter HINTS ${FFMPEG_PATH})
 find_library(SWSCALE_LIBRARY swscale HINTS ${FFMPEG_PATH})
 find_library(SWRESAMPLE_LIBRARY swresample HINTS ${FFMPEG_PATH})
 
+find_library(PYLON_BASE_LIBRARY PylonBase_v6_1 HINTS ${BASLER_PATH})
+find_library(PYLON_GENAPI_LIBRARY GenApi_MD_VC141_v3_1_Basler_pylon HINTS ${BASLER_PATH})
+find_library(PYLON_GCBASE_LIBRARY GCBase_MD_VC141_v3_1_Basler_pylon HINTS ${BASLER_PATH})
+find_library(PYLON_UTILITY_LIBRARY PylonUtility_v6_1 HINTS ${BASLER_PATH})
+
 include_directories("C:\\Users\\wanglab\\Documents\\ffmpeg_wrapper\\headers")
+include_directories("C:\\Program\ Files\\Basler\\pylon\ 6\\Development\\include")
 
 find_library(FFMPEG_WRAPPER_LIBRARY ffmpeg_wrapper HINTS "C:\\Users\\wanglab\\Documents\\ffmpeg_wrapper\\build")
 
@@ -77,6 +84,10 @@ target_link_libraries(CameraViewer PRIVATE
     ${SWSCALE_LIBRARY}
     ${SWRESAMPLE_LIBRARY}
     ${FFMPEG_WRAPPER_LIBRARY}
+    ${PYLON_BASE_LIBRARY}
+    ${PYLON_GENAPI_LIBRARY}
+    ${PYLON_GCBASE_LIBRARY}
+    ${PYLON_UTILITY_LIBRARY}
 )
 
 set_target_properties(CameraViewer PROPERTIES
