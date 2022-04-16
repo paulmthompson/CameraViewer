@@ -14,24 +14,56 @@ QWidget{
 
 }
 
+#graphicsView {
+    border-style: none;
+}
+
 /*  Scroll Area */
 
 #Left_Scroll_area {
     background-color: rgb(33, 37, 43);
+    border-style: none;
 }
+
+/* https://stackoverflow.com/questions/60125949/qt-qscrollbar-change-background-color */
 
 #Left_Scroll_area QScrollBar:Vertical {
-    background-color: yellow;
+    background-color: rgb(33, 37, 43);
     width: 20px;
+    margin: 25px 0 25px 0;
 }
 
+#Left_Scroll_area QScrollBar::handle:vertical:hover {
+    background-color: rgb(80, 80, 122);
+}
 
 #Left_Scroll_area QScrollBar::handle:vertical {
     background-color: rgb(0, 0, 0);
     min-height: 30px;
-    border-radius: 7px;
+    border-radius: 5px;
+    margin: 2px 2px 2px 2px;
 
 }
+
+#Left_Scroll_area QScrollBar::add-line:vertical {
+    border: 2px solid grey;
+    background: rgb(33, 37, 43);
+    height: 20px;
+    border-radius: 5px;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
+
+#Left_Scroll_area QScrollBar::sub-line:vertical {
+    border: 2px solid grey;
+    background: rgb(33, 37, 43);
+    height: 20px;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+
+
+
 
 /*
 #Left_Scroll_area QScrollBar::handle:vertical:hover {

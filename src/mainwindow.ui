@@ -71,7 +71,7 @@
          <x>0</x>
          <y>0</y>
          <width>241</width>
-         <height>661</height>
+         <height>1000</height>
         </rect>
        </property>
        <property name="frameShape">
@@ -184,8 +184,6 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources>
-  <include location="../cameraviewer.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
