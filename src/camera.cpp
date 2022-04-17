@@ -62,3 +62,7 @@ void Camera::changeGain(float new_gain) {
 std::string Camera::getSerial() const {
     return this->serial_num;
 }
+
+std::string Camera::getModel() const {
+    return this->model;
+}

@@ -27,9 +27,15 @@ public:
         return std::unique_ptr<Camera>(std::make_unique<Camera>());
     }
 
-private:
+    int getHeight() const;
+    int getWidth() const;
+    std::string getSerial() const;
+    std::string getModel() const;
+
+protected:
     int id;
     std::string serial_num;
+    std::string model;
 
     int h;
     int w;
@@ -53,10 +59,6 @@ private:
     //std::unique_ptr<VideoEncoder> ve;
     // Pylon::CBaslerUsbInstantCamera camera // This should be in a specialized class.
 
-
-    int getHeight() const;
-    int getWidth() const;
-    std::string getSerial() const;
 };
 
 

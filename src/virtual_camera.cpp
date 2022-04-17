@@ -4,6 +4,8 @@
 #include <memory>
 
 VirtualCamera::VirtualCamera() {
+    serial_num = "xxx-xxx-xxx";
+    model = "Virtual";
 
 }
 

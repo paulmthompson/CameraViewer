@@ -79,7 +79,17 @@ void MainWindow::connectCamera() {
         int cam_num =  select->selectedRows()[0].data().toInt();
 
         drawConnected(green);
+
+        updateModelandSerial(cam_num);
     }
+}
+
+void MainWindow::updateModelandSerial(int cam_num) {
+    std::string mymodel = this->cams[cam_num].get()->getModel();
+    std::string myserial = this->cams[cam_num].get()->getSerial();
+
+    ui->CameraModel->setText(QString::fromStdString(mymodel));
+    ui->CameraSerial->setText(QString::fromStdString(myserial));
 }
 
 void MainWindow::addVirtualCamera() {

@@ -37,6 +37,7 @@ private:
     std::vector<std::unique_ptr<Camera>> cams;
 
     void updateCameraTable();
+    void updateModelandSerial(int cam_num);
 
 private slots:
     void addVirtualCamera();
