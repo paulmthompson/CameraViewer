@@ -1,6 +1,11 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
+#include <vector>
+#include <memory>
+
+#include "virtual_camera.h"
+
 #include <QGraphicsPixmapItem>
 #include <QPainterPath>
 #include <QPainter>
@@ -12,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    addCallbacks();
 
     on_button_scene = new QGraphicsScene(this);
 
@@ -31,6 +38,8 @@ MainWindow::MainWindow(QWidget *parent)
     camera_view_pixmap = camera_view_scene->addPixmap(QPixmap::fromImage(myimage));
     ui->graphicsView->setScene(camera_view_scene);
     ui->graphicsView->show();
+
+    cams = std::vector<std::unique_ptr<Camera>>(0);
 }
 
 MainWindow::~MainWindow()
@@ -38,14 +47,55 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::drawConnected() {
+void MainWindow::addCallbacks() {
+    connect(ui->add_virtual_button,SIGNAL(clicked()),this,SLOT(addVirtualCamera()));
+    connect(ui->connect_button,SIGNAL(clicked()),this,SLOT(connectCamera()));
+}
 
-    on_button_scene->clear();
+void MainWindow::drawConnected(Connected_Button_Color color) {
+
+
+    this->on_button_scene->clear();
 
     QPainterPath on_button_path;
     on_button_path.addEllipse(0.0,0.0,25.0,25.0);
     on_button_path.setFillRule(Qt::WindingFill);
 
-    on_button_scene->addPath(on_button_path,QPen(Qt::green),QBrush(Qt::green));
+    switch (color) {
+        case green:
+            this->on_button_scene->addPath(on_button_path,QPen(Qt::green),QBrush(Qt::green));
+            break;
+        case red:
+            this->on_button_scene->addPath(on_button_path,QPen(Qt::red),QBrush(Qt::red));
+            break;
+    }
 
+}
+
+void MainWindow::connectCamera() {
+
+    QItemSelectionModel *select = ui->tableWidget->selectionModel();
+    if (select->hasSelection()) {
+        int cam_num =  select->selectedRows()[0].data().toInt();
+
+        drawConnected(green);
+    }
+}
+
+void MainWindow::addVirtualCamera() {
+
+    VirtualCamera v;
+    cams.push_back(std::unique_ptr<Camera>(v.copy_class()));
+
+    updateCameraTable();
+}
+
+void MainWindow::updateCameraTable() {
+
+    ui->tableWidget->setRowCount(0);
+    for (auto& cam : this->cams) {
+        ui->tableWidget->insertRow(ui->tableWidget->rowCount());
+    }
+
+    ui->tableWidget->selectRow(0);
 }

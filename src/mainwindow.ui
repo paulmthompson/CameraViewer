@@ -35,7 +35,7 @@
        <x>0</x>
        <y>0</y>
        <width>261</width>
-       <height>541</height>
+       <height>471</height>
       </rect>
      </property>
      <property name="sizePolicy">
@@ -56,7 +56,7 @@
         <x>0</x>
         <y>0</y>
         <width>259</width>
-        <height>539</height>
+        <height>469</height>
        </rect>
       </property>
       <property name="contextMenuPolicy">
@@ -81,7 +81,7 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
+          <y>220</y>
           <width>261</width>
           <height>111</height>
          </rect>
@@ -150,7 +150,7 @@
         <widget class="QLabel" name="label_4">
          <property name="geometry">
           <rect>
-           <x>80</x>
+           <x>70</x>
            <y>10</y>
            <width>111</width>
            <height>20</height>
@@ -159,6 +159,7 @@
          <property name="font">
           <font>
            <pointsize>12</pointsize>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
@@ -176,6 +177,155 @@
          </property>
          <property name="text">
           <string/>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QFrame" name="frame">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>130</y>
+          <width>261</width>
+          <height>91</height>
+         </rect>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::Panel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <widget class="QLabel" name="label_5">
+         <property name="geometry">
+          <rect>
+           <x>50</x>
+           <y>10</y>
+           <width>161</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Acquisition Control</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QFrame" name="frame_2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>261</width>
+          <height>131</height>
+         </rect>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::Panel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <widget class="QLabel" name="label_6">
+         <property name="geometry">
+          <rect>
+           <x>60</x>
+           <y>0</y>
+           <width>141</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Available Cameras</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="rescan_button">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>100</y>
+           <width>75</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Rescan</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="add_virtual_button">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>100</y>
+           <width>75</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Add virtual</string>
+         </property>
+        </widget>
+        <widget class="QTableWidget" name="tableWidget">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>20</y>
+           <width>231</width>
+           <height>71</height>
+          </rect>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <property name="columnCount">
+          <number>3</number>
+         </property>
+         <attribute name="horizontalHeaderMinimumSectionSize">
+          <number>20</number>
+         </attribute>
+         <attribute name="horizontalHeaderDefaultSectionSize">
+          <number>75</number>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>ID</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Model</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Connected</string>
+          </property>
+         </column>
+        </widget>
+        <widget class="QPushButton" name="connect_button">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>100</y>
+           <width>75</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Connect</string>
          </property>
         </widget>
        </widget>

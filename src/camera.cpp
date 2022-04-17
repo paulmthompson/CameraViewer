@@ -1,10 +1,6 @@
 
 #include "camera.h"
 
-Camera::Camera() {
-
-}
-
 /*
 Change camera resolution, bits, fps
 */

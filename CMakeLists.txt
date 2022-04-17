@@ -47,6 +47,8 @@ set(PROJECT_SOURCES
         cameraviewer.qrc
         include/camera.h
         src/camera.cpp
+        src/virtual_camera.cpp
+        include/virtual_camera.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
