@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include <stdlib.h>
 
 #include "virtual_camera.h"
 
@@ -40,6 +41,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->graphicsView->show();
 
     cams = std::vector<std::unique_ptr<Camera>>(0);
+
+    timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &MainWindow::acquisitionLoop);
+    acquisitionActive = false;
+    img_to_display = std::vector<uint8_t>(480*640);
+    cam_to_display = 0;
 }
 
 MainWindow::~MainWindow()
@@ -50,6 +57,7 @@ MainWindow::~MainWindow()
 void MainWindow::addCallbacks() {
     connect(ui->add_virtual_button,SIGNAL(clicked()),this,SLOT(addVirtualCamera()));
     connect(ui->connect_button,SIGNAL(clicked()),this,SLOT(connectCamera()));
+    connect(ui->play_button,SIGNAL(clicked()),this,SLOT(playButton()));
 }
 
 void MainWindow::drawConnected(Connected_Button_Color color) {
@@ -108,4 +116,45 @@ void MainWindow::updateCameraTable() {
     }
 
     ui->tableWidget->selectRow(0);
+}
+
+void MainWindow::playButton() {
+
+    if (this->acquisitionActive) {
+
+        for (auto& cam : this->cams) {
+            cam->stopAcquisition();
+        }
+
+        //I should still be alerted if trailing frames come in right?
+
+        timer->stop();
+        ui->play_button->setText(QString("Play"));
+        acquisitionActive = false;
+
+    } else {
+
+        for (auto& cam : this->cams) {
+            cam->startAcquisition();
+        }
+        ui->play_button->setText(QString("Pause"));
+        timer->start(40);
+        acquisitionActive = true;
+    }
+}
+
+void MainWindow::acquisitionLoop() {
+
+    for (int i = 0; i < img_to_display.size(); i++) {
+        img_to_display[i] = rand() % 255;
+    }
+
+    // Display
+    QImage img = QImage(&this->img_to_display[0],this->cams[this->cam_to_display]->getWidth(), this->cams[this->cam_to_display]->getHeight(), QImage::Format_Grayscale8);
+    updateCanvas(img);
+}
+
+void MainWindow::updateCanvas(QImage& img)
+{
+    camera_view_pixmap->setPixmap(QPixmap::fromImage(img));
 }

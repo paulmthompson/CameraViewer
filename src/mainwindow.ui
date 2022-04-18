@@ -227,6 +227,32 @@
           <string>Acquisition Control</string>
          </property>
         </widget>
+        <widget class="QPushButton" name="play_button">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>40</y>
+           <width>75</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Play</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="record_button">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>40</y>
+           <width>75</width>
+           <height>24</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Record</string>
+         </property>
+        </widget>
        </widget>
        <widget class="QFrame" name="frame_2">
         <property name="geometry">

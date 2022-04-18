@@ -30,6 +30,14 @@ QLabel {
     background-color: rgb(0,0,0);
 }
 
+#play_button {
+    background-color: rgb(0,0,0);
+}
+
+#record_button {
+    background-color: rgb(0,0,0);
+}
+
 #graphicsView {
     border-style: none;
 }

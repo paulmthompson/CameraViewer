@@ -7,6 +7,7 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
+#include <QTimer>
 
 #include "camera.h"
 
@@ -39,9 +40,19 @@ private:
     void updateCameraTable();
     void updateModelandSerial(int cam_num);
 
+    QTimer* timer;
+
+    void acquisitionLoop();
+    bool acquisitionActive;
+
+    void updateCanvas(QImage& img);
+    std::vector<uint8_t> img_to_display;
+    int cam_to_display;
+
 private slots:
     void addVirtualCamera();
     void connectCamera();
+    void playButton();
 
 };
 
