@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     camera_view_scene = new QGraphicsScene(this);
 
-    QImage myimage = QImage(640,480,QImage::Format_Grayscale8);
+    QImage myimage = QImage(ui->graphicsView->width(),ui->graphicsView->height(),QImage::Format_Grayscale8);
     myimage.fill(Qt::black);
     camera_view_pixmap = camera_view_scene->addPixmap(QPixmap::fromImage(myimage));
     ui->graphicsView->setScene(camera_view_scene);
@@ -156,5 +156,5 @@ void MainWindow::acquisitionLoop() {
 
 void MainWindow::updateCanvas(QImage& img)
 {
-    camera_view_pixmap->setPixmap(QPixmap::fromImage(img));
+    camera_view_pixmap->setPixmap(QPixmap::fromImage(img).scaled(ui->graphicsView->width(),ui->graphicsView->height()));
 }
