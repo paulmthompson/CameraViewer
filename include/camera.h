@@ -39,6 +39,8 @@ public:
 
     }
 
+    void assignID(int id);
+
     int getHeight() const;
     int getWidth() const;
     std::string getSerial() const;

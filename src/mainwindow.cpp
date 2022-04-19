@@ -97,7 +97,11 @@ void MainWindow::connectCamera() {
         drawConnected(green);
 
         updateModelandSerial(cam_num);
-        cams[cam_num]->initializeVideoEncoder();
+
+        std::string file_name = "test" + std::to_string(cam_num) + ".mp4";
+        cams[cam_num]->setSave("./", file_name);
+
+        cams[cam_num]->initializeVideoEncoder(); // If the filename is changed, the encoder should be re-initialized becuase it is dependant
 
         cams[cam_num]->connectCamera();
 
@@ -121,6 +125,8 @@ void MainWindow::addVirtualCamera() {
 
     VirtualCamera v;
     cams.push_back(std::unique_ptr<Camera>(v.copy_class()));
+
+    cams[cams.size()-1]->assignID(cams.size()-1);
 
     updateCameraTable();
 }
