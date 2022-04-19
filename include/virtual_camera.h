@@ -13,6 +13,8 @@ public:
         return std::unique_ptr<Camera>(std::make_unique<VirtualCamera>());
     }
 
+    void get_data(std::vector<uint8_t>& data_out) override;
+
 private:
 };
 

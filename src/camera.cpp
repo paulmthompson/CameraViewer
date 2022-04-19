@@ -5,6 +5,10 @@
 Change camera resolution, bits, fps
 */
 
+Camera::Camera() {
+   ve = std::make_unique<VideoEncoder>();
+}
+
 void Camera::changeSize(int width, int height) {
     this->w = width;
     this->h = height;
@@ -39,12 +43,19 @@ void Camera::setSave(std::string path, std::string name) {
 
 void Camera::startAcquisition() {
     this->acquisitionActive = true;
+    this->ve->openFile("test.mp4");
     //Camera.StartGrabbing();
 }
 
 void Camera::stopAcquisition() {
     this->acquisitionActive = false;
+    this->ve->closeFile();
     //Camera.StopGrabbing();
+}
+
+void Camera::initializeVideoEncoder() {
+    this->ve->createContext(this->w,this->h,25);
+    this->ve->set_pixel_format(GRAY8);
 }
 
 /*

@@ -47,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
     acquisitionActive = false;
     img_to_display = std::vector<uint8_t>(480*640);
     cam_to_display = 0;
+
 }
 
 MainWindow::~MainWindow()
@@ -89,6 +90,7 @@ void MainWindow::connectCamera() {
         drawConnected(green);
 
         updateModelandSerial(cam_num);
+        cams[cam_num]->initializeVideoEncoder();
     }
 }
 
@@ -145,8 +147,8 @@ void MainWindow::playButton() {
 
 void MainWindow::acquisitionLoop() {
 
-    for (int i = 0; i < img_to_display.size(); i++) {
-        img_to_display[i] = rand() % 255;
+    for (auto& cam : this->cams) {
+        cam->get_data(this->img_to_display);
     }
 
     // Display

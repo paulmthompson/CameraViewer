@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-// #include "video_encoder.h"
+#include "videoencoder.h"
 //#include <pylon/PylonIncludes.h>
 //#include <pylon/usb/BaslerUsbInstantCamera.h>
 
@@ -13,8 +13,12 @@
 class Camera {
 public:
 
+    Camera();
+
     void setConfig(std::string path, std::string name);
     void setSave(std::string path, std::string name);
+
+    void initializeVideoEncoder();
 
     void changeSize(int width, int height);
     void changeExposureTime(float exposure);
@@ -25,6 +29,10 @@ public:
 
     virtual std::unique_ptr<Camera> copy_class() {
         return std::unique_ptr<Camera>(std::make_unique<Camera>());
+    }
+
+    virtual void get_data(std::vector<uint8_t>& data_out) {
+
     }
 
     int getHeight() const;
@@ -56,7 +64,7 @@ protected:
 
     int totalFramesAcquired;
 
-    //std::unique_ptr<VideoEncoder> ve;
+    std::unique_ptr<VideoEncoder> ve;
     // Pylon::CBaslerUsbInstantCamera camera // This should be in a specialized class.
 
 };

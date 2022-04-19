@@ -35,6 +35,7 @@ find_library(PYLON_UTILITY_LIBRARY PylonUtility_v6_1 HINTS ${BASLER_PATH})
 
 include_directories("C:\\Users\\wanglab\\Documents\\ffmpeg_wrapper\\headers")
 include_directories("C:\\Program\ Files\\Basler\\pylon\ 6\\Development\\include")
+include_directories("C:\\Users\\wanglab\\Downloads\\ffmpeg-5.0-full_build-shared\\include")
 
 find_library(FFMPEG_WRAPPER_LIBRARY ffmpeg_wrapper HINTS "C:\\Users\\wanglab\\Documents\\ffmpeg_wrapper\\build")
 
