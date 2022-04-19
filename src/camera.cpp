@@ -7,6 +7,7 @@ Change camera resolution, bits, fps
 
 Camera::Camera() {
    ve = std::make_unique<VideoEncoder>();
+   this->attached = false;
 }
 
 void Camera::changeSize(int width, int height) {
@@ -76,4 +77,8 @@ std::string Camera::getSerial() const {
 
 std::string Camera::getModel() const {
     return this->model;
+}
+
+bool Camera::getAttached() const {
+    return this->attached;
 }

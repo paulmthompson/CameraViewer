@@ -4,6 +4,8 @@
 #include "camera.h"
 
 #include <memory>
+#include <random>
+
 
 class VirtualCamera : public Camera {
 public:
@@ -13,9 +15,14 @@ public:
         return std::unique_ptr<Camera>(std::make_unique<VirtualCamera>());
     }
 
+    void connectCamera() override;
     void get_data(std::vector<uint8_t>& data_out) override;
 
 private:
+    int fps; // Use this for stress testing.
+
+    std::vector<std::vector<uint8_t>> random_nums;
+    int random_index;
 };
 
 std::unique_ptr<VirtualCamera> createVirtualCamera();

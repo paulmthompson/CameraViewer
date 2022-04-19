@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <stdlib.h>
+#include <numeric>
 
 #include "virtual_camera.h"
 
@@ -12,6 +13,7 @@
 #include <QPainter>
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
+#include <QElapsedTimer>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -47,6 +49,11 @@ MainWindow::MainWindow(QWidget *parent)
     acquisitionActive = false;
     img_to_display = std::vector<uint8_t>(480*640);
     cam_to_display = 0;
+
+    loop_time = 40;
+
+    elapsed_times = std::vector<int>(loop_time);
+    elapsed_times_i = 0;
 
 }
 
@@ -91,6 +98,14 @@ void MainWindow::connectCamera() {
 
         updateModelandSerial(cam_num);
         cams[cam_num]->initializeVideoEncoder();
+
+        cams[cam_num]->connectCamera();
+
+        if (cams[cam_num]->getAttached()) {
+            ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("Yes")));
+        } else {
+            ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("No")));
+        }
     }
 }
 
@@ -113,11 +128,20 @@ void MainWindow::addVirtualCamera() {
 void MainWindow::updateCameraTable() {
 
     ui->tableWidget->setRowCount(0);
+    int current_row = 0;
     for (auto& cam : this->cams) {
         ui->tableWidget->insertRow(ui->tableWidget->rowCount());
+        ui->tableWidget->setItem(current_row,0,new QTableWidgetItem(QString::number(current_row)));
+        ui->tableWidget->setItem(current_row,1,new QTableWidgetItem(QString::fromStdString(cam->getModel())));
+        if (cam->getAttached()) {
+            ui->tableWidget->setItem(current_row,2,new QTableWidgetItem(QString::fromStdString("Yes")));
+        } else {
+            ui->tableWidget->setItem(current_row,2,new QTableWidgetItem(QString::fromStdString("No")));
+        }
+        current_row++;
     }
 
-    ui->tableWidget->selectRow(0);
+    //ui->tableWidget->selectRow(0);
 }
 
 void MainWindow::playButton() {
@@ -140,15 +164,27 @@ void MainWindow::playButton() {
             cam->startAcquisition();
         }
         ui->play_button->setText(QString("Pause"));
-        timer->start(40);
+        timer->start(this->loop_time);
         acquisitionActive = true;
     }
 }
 
 void MainWindow::acquisitionLoop() {
 
+    QElapsedTimer timer2;
+    timer2.start();
+
     for (auto& cam : this->cams) {
         cam->get_data(this->img_to_display);
+    }
+
+    elapsed_times[elapsed_times_i++] = timer2.elapsed();
+
+    if (elapsed_times_i >= elapsed_times.size())
+    {
+        elapsed_times_i = 0;
+        float mean_time = accumulate(elapsed_times.begin(),elapsed_times.end(),0) / elapsed_times.size();
+        qDebug() << "The loop took" << mean_time << "on average with a loop time of " << this->loop_time;
     }
 
     // Display

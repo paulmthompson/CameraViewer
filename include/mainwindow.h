@@ -49,6 +49,10 @@ private:
     std::vector<uint8_t> img_to_display;
     int cam_to_display;
 
+    std::vector<int> elapsed_times;
+    int loop_time;
+    int elapsed_times_i;
+
 private slots:
     void addVirtualCamera();
     void connectCamera();

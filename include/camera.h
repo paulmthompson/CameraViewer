@@ -20,6 +20,10 @@ public:
 
     void initializeVideoEncoder();
 
+    virtual void connectCamera() {
+
+    }
+
     void changeSize(int width, int height);
     void changeExposureTime(float exposure);
     void changeGain(float new_gain);
@@ -39,6 +43,7 @@ public:
     int getWidth() const;
     std::string getSerial() const;
     std::string getModel() const;
+    bool getAttached() const;
 
 protected:
     int id;
