@@ -42,8 +42,6 @@ void VirtualCamera::get_data(std::vector<uint8_t>& data_out) {
 
     // 1000 ms / 40 ms (loop speed) = 25 fps normally. We should loop in multiples of this
 
-
-
     for (int j = 0; j < this->fps / 25; j++) {
 
         memcpy(&data_out.data()[0],&random_nums[this->random_index++].data()[0],this->h*this->w);
@@ -53,6 +51,7 @@ void VirtualCamera::get_data(std::vector<uint8_t>& data_out) {
         if (random_index >= random_nums.size()) {
             random_index = 0;
         }
+        this->totalFramesAcquired++;
     }
 }
 

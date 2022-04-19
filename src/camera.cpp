@@ -10,6 +10,7 @@ Camera::Camera() {
    this->attached = false;
    this->save_file_path = "./";
    this->save_file_name = "test.mp4";
+   totalFramesAcquired = 0;
 }
 
 void Camera::changeSize(int width, int height) {
@@ -23,6 +24,10 @@ int Camera::getHeight() const {
 
 int Camera::getWidth() const {
     return this->w;
+}
+
+long Camera::getTotalFrames() const {
+    return this->totalFramesAcquired;
 }
 
 void Camera::assignID(int id) {

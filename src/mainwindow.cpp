@@ -193,6 +193,8 @@ void MainWindow::acquisitionLoop() {
         qDebug() << "The loop took" << mean_time << "on average with a loop time of " << this->loop_time;
     }
 
+    ui->frame_count_label->setText(QString::fromStdString(std::to_string(cams[0]->getTotalFrames())));
+
     // Display
     QImage img = QImage(&this->img_to_display[0],this->cams[this->cam_to_display]->getWidth(), this->cams[this->cam_to_display]->getHeight(), QImage::Format_Grayscale8);
     updateCanvas(img);

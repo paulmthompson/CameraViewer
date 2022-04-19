@@ -46,6 +46,7 @@ public:
     std::string getSerial() const;
     std::string getModel() const;
     bool getAttached() const;
+    long getTotalFrames() const;
 
 protected:
     int id;
@@ -69,7 +70,7 @@ protected:
     float gain;
     float exposure_time;
 
-    int totalFramesAcquired;
+    long totalFramesAcquired;
 
     std::unique_ptr<VideoEncoder> ve;
     // Pylon::CBaslerUsbInstantCamera camera // This should be in a specialized class.
