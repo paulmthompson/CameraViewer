@@ -6,7 +6,7 @@
 #include <algorithm>
 
 VirtualCamera::VirtualCamera() {
-    serial_num = "xxx-xxx-xxx";
+    serial_num = "xxx-xxx-" + std::to_string(std::rand() % 999);
     model = "Virtual";
 
     h = 480;
