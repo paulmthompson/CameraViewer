@@ -29,11 +29,6 @@ VirtualCamera::VirtualCamera() {
     }
 }
 
-std::unique_ptr<VirtualCamera> createVirtualCamera() {
-
-    return std::make_unique<VirtualCamera>(VirtualCamera());
-}
-
 void VirtualCamera::connectCamera() {
     this->attached = true;
 }

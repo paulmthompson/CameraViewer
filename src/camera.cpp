@@ -18,24 +18,8 @@ void Camera::changeSize(int width, int height) {
     this->h = height;
 }
 
-int Camera::getHeight() const {
-    return this->h;
-}
-
-int Camera::getWidth() const {
-    return this->w;
-}
-
-long Camera::getTotalFrames() const {
-    return this->totalFramesAcquired;
-}
-
 void Camera::assignID(int id) {
     this->id = id;
-}
-
-bool Camera::getAquisitionState() const {
-    return this->acquisitionActive;
 }
 
 /*
@@ -90,14 +74,3 @@ void Camera::changeGain(float new_gain) {
     this->gain = new_gain;
 }
 
-std::string Camera::getSerial() const {
-    return this->serial_num;
-}
-
-std::string Camera::getModel() const {
-    return this->model;
-}
-
-bool Camera::getAttached() const {
-    return this->attached;
-}

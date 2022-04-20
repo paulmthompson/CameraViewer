@@ -41,13 +41,13 @@ public:
 
     void assignID(int id);
 
-    int getHeight() const;
-    int getWidth() const;
-    std::string getSerial() const;
-    std::string getModel() const;
-    bool getAttached() const;
-    long getTotalFrames() const;
-    bool getAquisitionState() const;
+    int getHeight() const {return h;}
+    int getWidth() const {return w;}
+    std::string getSerial() const {return serial_num;}
+    std::string getModel() const {return model;}
+    bool getAttached() const {return attached;}
+    long getTotalFrames() const {return totalFramesAcquired;}
+    bool getAquisitionState() const {return acquisitionActive;}
 
 protected:
     int id;
