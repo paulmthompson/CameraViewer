@@ -59,6 +59,7 @@ private slots:
     void addVirtualCamera();
     void connectCamera();
     void playButton();
+    void selectCameraInTable(int row, int column);
 
 };
 

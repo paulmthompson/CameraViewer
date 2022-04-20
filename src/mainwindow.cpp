@@ -66,6 +66,7 @@ void MainWindow::addCallbacks() {
     connect(ui->add_virtual_button,SIGNAL(clicked()),this,SLOT(addVirtualCamera()));
     connect(ui->connect_button,SIGNAL(clicked()),this,SLOT(connectCamera()));
     connect(ui->play_button,SIGNAL(clicked()),this,SLOT(playButton()));
+    connect(ui->tableWidget,SIGNAL(cellClicked(int, int)),this,SLOT(selectCameraInTable(int, int)));
 }
 
 void MainWindow::drawConnected(Connected_Button_Color color) {
@@ -96,7 +97,7 @@ void MainWindow::connectCamera() {
 
         drawConnected(green);
 
-        updateModelandSerial(cam_num);
+        //updateModelandSerial(cam_num);
 
         std::string file_name = "test" + std::to_string(cam_num) + ".mp4";
         cams[cam_num]->setSave("./", file_name);
@@ -223,4 +224,18 @@ bool MainWindow::areCamerasConnected() {
     }
 
     return output;
+}
+
+void MainWindow::selectCameraInTable(int row, int column) {
+
+
+    updateModelandSerial(row);
+
+    if (cams[row]->getAttached()) {
+         drawConnected(green);
+    } else {
+        drawConnected(red);
+    }
+
+
 }
