@@ -110,13 +110,7 @@ void MainWindow::connectCamera() {
         int cam_num =  select->selectedRows()[0].data().toInt();
 
         drawConnected(green);
-
-
-        //std::string file_name = "test" + std::to_string(cam_num) + ".mp4";
-        //cams[cam_num]->setSave("./", file_name);
         changeFileNames(cams[cam_num]);
-
-        cams[cam_num]->initializeVideoEncoder(); // If the filename is changed, the encoder should be re-initialized becuase it is dependant
 
         cams[cam_num]->connectCamera();
 
@@ -322,17 +316,19 @@ void MainWindow::selectCameraInTable(int row, int column) {
 void MainWindow::savePathButton() {
 
     if (! this->recordMode) {
-    QString vid_name =  QFileDialog::getSaveFileName(
-                this,
-                "Save File Name",
-                QDir::currentPath(),
-                "MP4 (*.mp4)");
+        QString vid_name =  QFileDialog::getSaveFileName(
+                    this,
+                    "Save File Name",
+                    QDir::currentPath(),
+                    "MP4 (*.mp4)");
+        if (!vid_name.isEmpty()) {
 
-    this->save_file_path = vid_name.toStdString();
+            this->save_file_path = vid_name.toStdString();
 
-    changeFileNames();
+            changeFileNames();
 
-    ui->save_path_label->setText(vid_name);
+            ui->save_path_label->setText(vid_name);
+        }
     } else {
         std::cout << "Can't change filename while you are already saving!" << std::endl;
     }
