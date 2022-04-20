@@ -46,8 +46,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &MainWindow::acquisitionLoop);
-    acquisitionActive = false;
     recordMode = false;
+    record_countdown = 0;
+
+    viewActive = true;
+    softwareTrigger = false;
 
     img_to_display = std::vector<uint8_t>(480*640);
     cam_to_display = 0;
@@ -57,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent)
     elapsed_times = std::vector<int>(loop_time);
     elapsed_times_i = 0;
 
+    timer->start(this->loop_time);
 }
 
 MainWindow::~MainWindow()
@@ -67,9 +71,10 @@ MainWindow::~MainWindow()
 void MainWindow::addCallbacks() {
     connect(ui->add_virtual_button,SIGNAL(clicked()),this,SLOT(addVirtualCamera()));
     connect(ui->connect_button,SIGNAL(clicked()),this,SLOT(connectCamera()));
-    connect(ui->play_button,SIGNAL(clicked()),this,SLOT(playButton()));
-    connect(ui->tableWidget,SIGNAL(cellClicked(int, int)),this,SLOT(selectCameraInTable(int, int)));
+    connect(ui->start_cam_button,SIGNAL(clicked()),this,SLOT(triggerCamButton()));
+    connect(ui->tableWidget,SIGNAL(cellClicked(int,int)),this,SLOT(selectCameraInTable(int,int)));
     connect(ui->record_button,SIGNAL(clicked()),this,SLOT(recordButton()));
+    connect(ui->view_button,SIGNAL(clicked()),this,SLOT(viewButton()));
 }
 
 void MainWindow::drawConnected(Connected_Button_Color color) {
@@ -111,6 +116,7 @@ void MainWindow::connectCamera() {
 
         if (cams[cam_num]->getAttached()) {
             ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("Yes")));
+            cams[cam_num]->startAcquisition();
         } else {
             ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("No")));
         }
@@ -154,41 +160,17 @@ void MainWindow::updateCameraTable() {
     //ui->tableWidget->selectRow(0);
 }
 
-void MainWindow::playButton() {
-
-    if (this->areCamerasConnected()) {
-
-        // If our cameras are running, we should initiate the stop sequence
-        // We want to tell our camera to stop acquiring new
-        if (this->acquisitionActive) {
-
-            initiateStopSequence();
-            ui->play_button->setText(QString("Play"));
-        } else {
-
-            for (auto& cam : this->cams) {
-                if (cam->getAttached()) {
-                    cam->startAcquisition();
-                }
-            }
-            ui->play_button->setText(QString("Pause"));
-            timer->start(this->loop_time);
-            acquisitionActive = true;
-        }
+void MainWindow::viewButton() {
+    if (viewActive) {
+        viewActive = false;
     } else {
-        std::cout << "No cameras are connected. Cannot acquire frames!" << std::endl;
+        viewActive = true;
     }
 }
 
 //Our cameras should first stop collecting frames
 void MainWindow::initiateStopSequence() {
 
-    for (auto& cam : this->cams) {
-        if (cam->getAttached()) {
-            cam->stopAcquisition();
-        }
-    }
-    acquisitionActive = false;
 
 }
 
@@ -196,52 +178,110 @@ void MainWindow::recordButton() {
 
     if (this->recordMode) {
         this->recordMode = false;
-
+        this->record_countdown = 5; //Number of acquisition loops before turning off saving and closing mp4 file. This helps if there are some lingering frames to acquire
+        if (this->softwareTrigger) {
+            turnOffTrigger();
+        }
         ui->view_record_label->setText(QString::fromStdString("View Mode"));
+        ui->graphicsView->setStyleSheet("#graphicsView{border: 5px solid black}");
     } else {
         this->recordMode = true;
-
+        for (auto& cam : this->cams) {
+            if (cam->getAttached()) {
+                cam->setRecord(true);
+            }
+        }
         ui->view_record_label->setText(QString::fromStdString("Record Mode"));
+        ui->graphicsView->setStyleSheet("#graphicsView{border: 5px solid red}");
     }
+}
 
+
+// This is the software trigger method
+void MainWindow::triggerCamButton() {
+
+    if (this->areCamerasConnected()) {
+
+        if (this->softwareTrigger) {
+            turnOffTrigger();
+        } else {
+            turnOnTrigger();
+        }
+    } else {
+        std::cout << "No cameras are connected. Cannot acquire frames!" << std::endl;
+    }
+}
+
+void MainWindow::turnOnTrigger() {
+    //Send software trigger signal to camera
+   ui->start_cam_button->setText(QString("Stop Camera"));
+   this->softwareTrigger = true;
+   for (auto& cam : this->cams) {
+       if (cam->getAttached() && cam->getAquisitionState()) {
+           cam->startTrigger();
+       }
+   }
+}
+
+void MainWindow::turnOffTrigger() {
+    //If they are running, we should stop them, but if we are in record mode, we should make sure to also stop the recording in such a way as to not lose frames
+    ui->start_cam_button->setText(QString("Trigger Camera"));
+    this->softwareTrigger = false;
     for (auto& cam : this->cams) {
-        if (cam->getAttached()) {
-            cam->setRecord(this->recordMode);
+        if (cam->getAttached() && cam->getAquisitionState()) {
+            cam->stopTrigger();
         }
     }
-
 }
 
 void MainWindow::acquisitionLoop() {
 
-    QElapsedTimer timer2;
-    timer2.start();
+    if (this->areCamerasConnected()) {
 
-    int num_frames_acquired = 0;
+        QElapsedTimer timer2;
+        timer2.start();
 
-    for (auto& cam : this->cams) {
-        if (cam->getAttached()) {
-            num_frames_acquired += cam->get_data(this->img_to_display);
+        int num_frames_acquired = 0;
+
+        //Cameras in the "active" state will return frames if they have them.
+        for (auto& cam : this->cams) {
+            if (cam->getAttached() && cam->getAquisitionState()) {
+                num_frames_acquired += cam->get_data(this->img_to_display);
+            }
         }
-    }
 
-    elapsed_times[elapsed_times_i++] = timer2.elapsed();
+        elapsed_times[elapsed_times_i++] = timer2.elapsed();
 
-    if (elapsed_times_i >= elapsed_times.size())
-    {
-        elapsed_times_i = 0;
-        float mean_time = accumulate(elapsed_times.begin(),elapsed_times.end(),0) / elapsed_times.size();
-        qDebug() << "The loop took" << mean_time << "on average with a loop time of " << this->loop_time;
-    }
+        if (elapsed_times_i >= elapsed_times.size())
+        {
+            elapsed_times_i = 0;
+            float mean_time = accumulate(elapsed_times.begin(),elapsed_times.end(),0) / elapsed_times.size();
+            qDebug() << "The loop took" << mean_time << "on average with a loop time of " << this->loop_time;
+            if (this->recordMode) {
+                //ui->graphicsView->setStyleSheet("#graphicsView{border: 5px solid black}");
+            }
+        }
 
-    ui->frame_count_label->setText(QString::fromStdString(std::to_string(cams[0]->getTotalFrames())));
+        ui->frame_count_label->setText(QString::fromStdString(std::to_string(cams[0]->getTotalFrames())));
 
-    // Display
-    QImage img = QImage(&this->img_to_display[0],this->cams[this->cam_to_display]->getWidth(), this->cams[this->cam_to_display]->getHeight(), QImage::Format_Grayscale8);
-    updateCanvas(img);
+        // Display
+        if (this->viewActive) {
+            QImage img = QImage(&this->img_to_display[0],this->cams[this->cam_to_display]->getWidth(), this->cams[this->cam_to_display]->getHeight(), QImage::Format_Grayscale8);
+            updateCanvas(img);
+        }
 
-    if ((! this->acquisitionActive) &&(num_frames_acquired == 0 )){
-        this->timer->stop();
+        // If the cameras are no longer triggered and we were saving, or we were told to stop saving (but still have a trigger), we should close the file
+        if (record_countdown > 0) {
+            if (record_countdown == 1) {
+                for (auto& cam : this->cams) {
+                    if (cam->getAttached()) {
+                        cam->setRecord(false);
+                    }
+                }
+            }
+            record_countdown--;
+        }
+
     }
 }
 

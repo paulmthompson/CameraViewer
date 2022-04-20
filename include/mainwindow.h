@@ -44,8 +44,16 @@ private:
 
     void acquisitionLoop();
     void initiateStopSequence();
-    bool acquisitionActive;
+
+    // In recordMode, cameras will save frames that they acquire
     bool recordMode;
+    int record_countdown;
+
+
+    bool viewActive;
+    bool softwareTrigger;
+    void turnOnTrigger();
+    void turnOffTrigger();
 
     void updateCanvas(QImage& img);
     std::vector<uint8_t> img_to_display;
@@ -60,9 +68,10 @@ private:
 private slots:
     void addVirtualCamera();
     void connectCamera();
-    void playButton();
     void recordButton();
     void selectCameraInTable(int row, int column);
+    void viewButton();
+    void triggerCamButton();
 
 };
 

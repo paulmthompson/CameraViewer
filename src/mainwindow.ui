@@ -227,30 +227,30 @@
           <string>Acquisition Control</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="play_button">
-         <property name="geometry">
-          <rect>
-           <x>20</x>
-           <y>40</y>
-           <width>75</width>
-           <height>24</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Play</string>
-         </property>
-        </widget>
         <widget class="QPushButton" name="record_button">
          <property name="geometry">
           <rect>
-           <x>140</x>
+           <x>144</x>
            <y>40</y>
-           <width>75</width>
-           <height>24</height>
+           <width>91</width>
+           <height>31</height>
           </rect>
          </property>
          <property name="text">
           <string>Record</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="start_cam_button">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>40</y>
+           <width>91</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Trigger Camera</string>
          </property>
         </widget>
        </widget>
@@ -506,6 +506,48 @@
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QFrame" name="viewer_frame">
+     <property name="geometry">
+      <rect>
+       <x>320</x>
+       <y>470</y>
+       <width>381</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <widget class="QPushButton" name="view_button">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>91</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Freeze View</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="snapshot_button">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>20</y>
+        <width>91</width>
+        <height>24</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Take Snapshot</string>
       </property>
      </widget>
     </widget>

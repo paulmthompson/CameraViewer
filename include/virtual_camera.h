@@ -15,6 +15,11 @@ public:
         return std::unique_ptr<Camera>(std::make_unique<VirtualCamera>());
     }
 
+    void startAcquisition() override {this->acquisitionActive = true;}
+    void stopAcquisition() override {this->acquisitionActive = false;}
+    void startTrigger() override {this->triggered = true;}
+    void stopTrigger() override {this->triggered = false;}
+
     void connectCamera() override;
     int get_data(std::vector<uint8_t>& data_out) override;
 

@@ -29,8 +29,10 @@ public:
     void changeExposureTime(float exposure);
     void changeGain(float new_gain);
 
-    void startAcquisition();
-    void stopAcquisition();
+    virtual void startAcquisition() {}
+    virtual void stopAcquisition() {}
+    virtual void startTrigger() {}
+    virtual void stopTrigger() {}
     void setRecord(bool record_state);
 
     virtual std::unique_ptr<Camera> copy_class() {
@@ -48,6 +50,7 @@ public:
     bool getAttached() const {return attached;}
     long getTotalFrames() const {return totalFramesAcquired;}
     bool getAquisitionState() const {return acquisitionActive;}
+    bool getTriggered() const {return triggered;}
 
 protected:
     int id;
@@ -64,9 +67,19 @@ protected:
     std::string config_file_name;
     std::string config_file_path;
 
-    bool attached;
+    bool attached; //Specifies if the camera is connected and initialized.
+
+    //The camera has received a signal to begin acquiring frames. In this state, it may depend on an internally generated software signal,
+    //or it may be waiting for externally provided triggers
+    //The get_data loop will therefore only be initiated if the camera is in the active acquisition state
+    // If a camera is successflly connected, in a free run mode, it would be best to keep this true
     bool acquisitionActive;
+
+    //After possibly acquiring frames, if the camera has state saveData, all of the frames will be saved using the
+    //video encoder object.
     bool saveData;
+
+    bool triggered;
 
     float gain;
     float exposure_time;

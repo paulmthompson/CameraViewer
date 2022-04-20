@@ -30,7 +30,15 @@ QLabel {
     background-color: rgb(0,0,0);
 }
 
-#play_button {
+#view_button {
+    background-color: rgb(0,0,0);
+}
+
+#snapshot_button {
+    background-color: rgb(0,0,0);
+}
+
+#start_cam_button {
     background-color: rgb(0,0,0);
 }
 

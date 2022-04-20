@@ -12,7 +12,10 @@ Camera::Camera() {
    this->save_file_name = "test.mp4";
    totalFramesAcquired = 0;
    this->saveData = false;
+   this->acquisitionActive = false;
+   this->triggered = false;
 }
+
 
 void Camera::changeSize(int width, int height) {
     this->w = width;
@@ -25,6 +28,12 @@ void Camera::assignID(int id) {
 
 void Camera::setRecord(bool record_state) {
     this->saveData = record_state;
+
+    if (record_state) {
+        this->ve->openFile();
+    } else {
+        this->ve->closeFile();
+    }
 }
 
 /*
@@ -46,16 +55,6 @@ void Camera::setSave(std::string path, std::string name) {
 
 */
 
-void Camera::startAcquisition() {
-    this->acquisitionActive = true;
-    this->ve->openFile();
-}
-
-void Camera::stopAcquisition() {
-    this->acquisitionActive = false;
-    this->ve->closeFile();
-}
-
 
 //Create a video encoder object for the specified save path
 //Don't start writing the video yet
@@ -73,8 +72,8 @@ If we receive a stop signal from the GUI
 
 */
 void Camera::stopVideoEncoder() {
-
-
+    this->saveData = false;
+    this->ve->closeFile();
 }
 
 /*
