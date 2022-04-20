@@ -30,5 +30,4 @@ private:
     int random_index;
 };
 
-std::unique_ptr<VirtualCamera> createVirtualCamera();
 #endif // VIRTUAL_CAMERA_H

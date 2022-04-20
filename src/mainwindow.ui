@@ -418,9 +418,9 @@
      <property name="geometry">
       <rect>
        <x>320</x>
-       <y>19</y>
-       <width>451</width>
-       <height>61</height>
+       <y>9</y>
+       <width>491</width>
+       <height>71</height>
       </rect>
      </property>
      <property name="frameShape">
@@ -458,7 +458,7 @@
      <widget class="QLabel" name="time_label">
       <property name="geometry">
        <rect>
-        <x>130</x>
+        <x>140</x>
         <y>10</y>
         <width>49</width>
         <height>16</height>
@@ -474,7 +474,7 @@
      <widget class="QLabel" name="frame_count_label">
       <property name="geometry">
        <rect>
-        <x>110</x>
+        <x>120</x>
         <y>30</y>
         <width>71</width>
         <height>20</height>
@@ -506,6 +506,35 @@
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_9">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>121</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Total Frames Saved: </string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="frame_count_save_label">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>50</y>
+        <width>71</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>0</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
       </property>
      </widget>
     </widget>

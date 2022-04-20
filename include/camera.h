@@ -49,6 +49,7 @@ public:
     std::string getModel() const {return model;}
     bool getAttached() const {return attached;}
     long getTotalFrames() const {return totalFramesAcquired;}
+    long getTotalFramesSaved() const {return totalFramesSaved;}
     bool getAquisitionState() const {return acquisitionActive;}
     bool getTriggered() const {return triggered;}
 
@@ -85,6 +86,7 @@ protected:
     float exposure_time;
 
     long totalFramesAcquired;
+    long totalFramesSaved;
 
     std::unique_ptr<VideoEncoder> ve;
     // Pylon::CBaslerUsbInstantCamera camera // This should be in a specialized class.

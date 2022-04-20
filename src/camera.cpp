@@ -11,6 +11,7 @@ Camera::Camera() {
    this->save_file_path = "./";
    this->save_file_name = "test.mp4";
    totalFramesAcquired = 0;
+   totalFramesSaved = 0;
    this->saveData = false;
    this->acquisitionActive = false;
    this->triggered = false;

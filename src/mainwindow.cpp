@@ -262,7 +262,9 @@ void MainWindow::acquisitionLoop() {
             }
         }
 
-        ui->frame_count_label->setText(QString::fromStdString(std::to_string(cams[0]->getTotalFrames())));
+        ui->frame_count_save_label->setText(QString::fromStdString(std::to_string(cams[this->cam_to_display]->getTotalFramesSaved())));
+        ui->frame_count_label->setText(QString::fromStdString(std::to_string(cams[this->cam_to_display]->getTotalFrames())));
+
 
         // Display
         if (this->viewActive) {

@@ -47,6 +47,7 @@ int VirtualCamera::get_data(std::vector<uint8_t>& data_out) {
 
         if (this->saveData) {
             ve->writeFrameGray8(data_out);
+            this->totalFramesSaved++;
         }
 
         if (random_index >= random_nums.size()) {
