@@ -65,6 +65,10 @@ private:
 
     bool areCamerasConnected();
 
+    std::string save_file_path;
+    void changeFileNames();
+    void changeFileNames(std::unique_ptr<Camera>& cam);
+
 private slots:
     void addVirtualCamera();
     void connectCamera();
@@ -72,6 +76,7 @@ private slots:
     void selectCameraInTable(int row, int column);
     void viewButton();
     void triggerCamButton();
+    void savePathButton();
 
 };
 

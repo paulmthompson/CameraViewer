@@ -52,6 +52,7 @@ public:
     long getTotalFramesSaved() const {return totalFramesSaved;}
     bool getAquisitionState() const {return acquisitionActive;}
     bool getTriggered() const {return triggered;}
+    int getID() const {return id;}
 
 protected:
     int id;

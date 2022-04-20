@@ -81,13 +81,13 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>260</y>
+          <y>330</y>
           <width>261</width>
-          <height>111</height>
+          <height>101</height>
          </rect>
         </property>
         <property name="frameShape">
-         <enum>QFrame::Panel</enum>
+         <enum>QFrame::NoFrame</enum>
         </property>
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
@@ -199,11 +199,11 @@
           <x>0</x>
           <y>170</y>
           <width>261</width>
-          <height>91</height>
+          <height>161</height>
          </rect>
         </property>
         <property name="frameShape">
-         <enum>QFrame::Panel</enum>
+         <enum>QFrame::NoFrame</enum>
         </property>
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
@@ -253,6 +253,48 @@
           <string>Trigger Camera</string>
          </property>
         </widget>
+        <widget class="QLabel" name="label_10">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>80</y>
+           <width>91</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Save File Path: </string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="save_path_label">
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>80</y>
+           <width>151</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Current Directory</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="change_save_button">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>110</y>
+           <width>131</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Change Save File Path</string>
+         </property>
+        </widget>
        </widget>
        <widget class="QFrame" name="frame_2">
         <property name="geometry">
@@ -264,7 +306,7 @@
          </rect>
         </property>
         <property name="frameShape">
-         <enum>QFrame::Panel</enum>
+         <enum>QFrame::NoFrame</enum>
         </property>
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>

@@ -14,6 +14,8 @@
 #include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
 #include <QElapsedTimer>
+#include <QDir>
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -61,6 +63,9 @@ MainWindow::MainWindow(QWidget *parent)
     elapsed_times_i = 0;
 
     timer->start(this->loop_time);
+
+    save_file_path = QDir::currentPath().toStdString() + "/" + "test.mp4";
+    ui->save_path_label->setText(QString::fromStdString(save_file_path));
 }
 
 MainWindow::~MainWindow()
@@ -75,6 +80,7 @@ void MainWindow::addCallbacks() {
     connect(ui->tableWidget,SIGNAL(cellClicked(int,int)),this,SLOT(selectCameraInTable(int,int)));
     connect(ui->record_button,SIGNAL(clicked()),this,SLOT(recordButton()));
     connect(ui->view_button,SIGNAL(clicked()),this,SLOT(viewButton()));
+    connect(ui->change_save_button,SIGNAL(clicked()),this,SLOT(savePathButton()));
 }
 
 void MainWindow::drawConnected(Connected_Button_Color color) {
@@ -105,10 +111,10 @@ void MainWindow::connectCamera() {
 
         drawConnected(green);
 
-        //updateModelandSerial(cam_num);
 
-        std::string file_name = "test" + std::to_string(cam_num) + ".mp4";
-        cams[cam_num]->setSave("./", file_name);
+        //std::string file_name = "test" + std::to_string(cam_num) + ".mp4";
+        //cams[cam_num]->setSave("./", file_name);
+        changeFileNames(cams[cam_num]);
 
         cams[cam_num]->initializeVideoEncoder(); // If the filename is changed, the encoder should be re-initialized becuase it is dependant
 
@@ -311,6 +317,47 @@ void MainWindow::selectCameraInTable(int row, int column) {
     } else {
         drawConnected(red);
     }
+}
 
+void MainWindow::savePathButton() {
 
+    if (! this->recordMode) {
+    QString vid_name =  QFileDialog::getSaveFileName(
+                this,
+                "Save File Name",
+                QDir::currentPath(),
+                "MP4 (*.mp4)");
+
+    this->save_file_path = vid_name.toStdString();
+
+    changeFileNames();
+
+    ui->save_path_label->setText(vid_name);
+    } else {
+        std::cout << "Can't change filename while you are already saving!" << std::endl;
+    }
+
+}
+
+void MainWindow::changeFileNames() {
+
+    std::filesystem::path p = this->save_file_path;
+    std::string dir_path = p.parent_path().string() +"/";
+    auto name_without_suffix = p.filename().replace_extension().string();
+
+    for (auto& cam : this->cams) {
+
+        cam->setSave(dir_path, name_without_suffix + std::to_string(cam->getID()) + ".mp4");
+        cam->initializeVideoEncoder();
+    }
+}
+
+void MainWindow::changeFileNames(std::unique_ptr<Camera>& cam) {
+
+    std::filesystem::path p = this->save_file_path;
+    std::string dir_path = p.parent_path().string() +"/";
+    auto name_without_suffix = p.filename().replace_extension().string();
+
+    cam->setSave(dir_path, name_without_suffix + std::to_string(cam->getID()) + ".mp4");
+    cam->initializeVideoEncoder();
 }
