@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include <pylon/PylonIncludes.h>
 #include <pylon/usb/BaslerUsbInstantCamera.h>
@@ -17,6 +18,8 @@ public:
     std::unique_ptr<Camera> copy_class() override {
         return std::unique_ptr<Camera>(std::make_unique<BaslerCamera>());
     }
+
+    std::vector<std::string> scan();
 
     void startAcquisition() override;
     void stopAcquisition() override;

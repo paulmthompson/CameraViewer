@@ -89,3 +89,23 @@ int BaslerCamera::get_data(std::vector<uint8_t>& data_out) {
 
     return frames_acquired;
 }
+
+std::vector<std::string> BaslerCamera::scan() {
+
+    Pylon::PylonInitialize();
+
+    std::vector<std::string> output = {};
+
+    Pylon::CTlFactory& tlFactory = Pylon::CTlFactory::GetInstance();
+
+    Pylon::DeviceInfoList_t devices;
+    if ( tlFactory.EnumerateDevices(devices) == 0 )
+    {
+        return output;
+    } else {
+        for (auto& device : devices) {
+            output.push_back(device.GetSerialNumber().c_str());
+        }
+        return output;
+    }
+}

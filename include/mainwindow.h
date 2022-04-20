@@ -77,6 +77,7 @@ private slots:
     void viewButton();
     void triggerCamButton();
     void savePathButton();
+    void scanForCameras();
 
 };
 

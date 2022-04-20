@@ -23,10 +23,6 @@ void Camera::changeSize(int width, int height) {
     this->h = height;
 }
 
-void Camera::assignID(int id) {
-    this->id = id;
-}
-
 void Camera::setRecord(bool record_state) {
     this->saveData = record_state;
 

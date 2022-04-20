@@ -39,7 +39,8 @@ public:
 
     virtual int get_data(std::vector<uint8_t>& data_out) {return 0;} //This should return the number of frames acquired.
 
-    void assignID(int id);
+    void assignID(int id) {this->id = id;}
+    void assignSerial(std::string serial) {this->serial_num = serial;}
 
     int getHeight() const {return h;}
     int getWidth() const {return w;}

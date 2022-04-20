@@ -7,6 +7,7 @@
 #include <numeric>
 
 #include "virtual_camera.h"
+#include "basler_camera.h"
 
 #include <QGraphicsPixmapItem>
 #include <QPainterPath>
@@ -81,6 +82,7 @@ void MainWindow::addCallbacks() {
     connect(ui->record_button,SIGNAL(clicked()),this,SLOT(recordButton()));
     connect(ui->view_button,SIGNAL(clicked()),this,SLOT(viewButton()));
     connect(ui->change_save_button,SIGNAL(clicked()),this,SLOT(savePathButton()));
+    connect(ui->rescan_button,SIGNAL(clicked()),this,SLOT(scanForCameras()));
 }
 
 void MainWindow::drawConnected(Connected_Button_Color color) {
@@ -360,3 +362,19 @@ void MainWindow::changeFileNames(std::unique_ptr<Camera>& cam) {
     cam->setSave(dir_path, name_without_suffix + std::to_string(cam->getID()) + ".mp4");
     cam->initializeVideoEncoder();
 }
+
+void MainWindow::scanForCameras() {
+
+    auto b = BaslerCamera();
+
+    auto connected_camera_strings = b.scan();
+
+    for (auto& serial_num : connected_camera_strings) {
+        cams.push_back(std::unique_ptr<Camera>(b.copy_class()));
+        cams[cams.size()-1]->assignID(cams.size()-1);
+        cams[cams.size()-1]->assignSerial(serial_num);
+    }
+}
+
+
+
