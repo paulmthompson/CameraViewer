@@ -53,6 +53,8 @@ private:
     int loop_time;
     int elapsed_times_i;
 
+    bool areCamerasConnected();
+
 private slots:
     void addVirtualCamera();
     void connectCamera();

@@ -47,6 +47,7 @@ public:
     std::string getModel() const;
     bool getAttached() const;
     long getTotalFrames() const;
+    bool getAquisitionState() const;
 
 protected:
     int id;

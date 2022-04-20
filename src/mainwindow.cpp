@@ -152,26 +152,34 @@ void MainWindow::updateCameraTable() {
 
 void MainWindow::playButton() {
 
-    if (this->acquisitionActive) {
+    if (this->areCamerasConnected()) {
+        if (this->acquisitionActive) {
 
-        for (auto& cam : this->cams) {
-            cam->stopAcquisition();
+            for (auto& cam : this->cams) {
+                if (cam->getAttached()) {
+                    cam->stopAcquisition();
+                }
+            }
+
+            //I should still be alerted if trailing frames come in right?
+
+            timer->stop();
+            ui->play_button->setText(QString("Play"));
+            acquisitionActive = false;
+
+        } else {
+
+            for (auto& cam : this->cams) {
+                if (cam->getAttached()) {
+                    cam->startAcquisition();
+                }
+            }
+            ui->play_button->setText(QString("Pause"));
+            timer->start(this->loop_time);
+            acquisitionActive = true;
         }
-
-        //I should still be alerted if trailing frames come in right?
-
-        timer->stop();
-        ui->play_button->setText(QString("Play"));
-        acquisitionActive = false;
-
     } else {
-
-        for (auto& cam : this->cams) {
-            cam->startAcquisition();
-        }
-        ui->play_button->setText(QString("Pause"));
-        timer->start(this->loop_time);
-        acquisitionActive = true;
+        std::cout << "No cameras are connected. Cannot acquire frames!" << std::endl;
     }
 }
 
@@ -181,7 +189,9 @@ void MainWindow::acquisitionLoop() {
     timer2.start();
 
     for (auto& cam : this->cams) {
-        cam->get_data(this->img_to_display);
+        if (cam->getAttached() && cam->getAquisitionState()) {
+            cam->get_data(this->img_to_display);
+        }
     }
 
     elapsed_times[elapsed_times_i++] = timer2.elapsed();
@@ -203,4 +213,14 @@ void MainWindow::acquisitionLoop() {
 void MainWindow::updateCanvas(QImage& img)
 {
     camera_view_pixmap->setPixmap(QPixmap::fromImage(img).scaled(ui->graphicsView->width(),ui->graphicsView->height()));
+}
+
+bool MainWindow::areCamerasConnected() {
+
+    bool output = false;
+    for (auto& cam : this->cams) {
+        output |= cam->getAttached();
+    }
+
+    return output;
 }

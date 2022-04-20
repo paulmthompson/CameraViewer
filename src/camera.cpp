@@ -34,6 +34,10 @@ void Camera::assignID(int id) {
     this->id = id;
 }
 
+bool Camera::getAquisitionState() const {
+    return this->acquisitionActive;
+}
+
 /*
 Change camera output path and configuration
 */
