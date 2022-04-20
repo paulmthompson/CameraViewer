@@ -50,6 +50,8 @@ set(PROJECT_SOURCES
         src/camera.cpp
         src/virtual_camera.cpp
         include/virtual_camera.h
+        include/basler_camera.h
+        src/basler_camera.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
