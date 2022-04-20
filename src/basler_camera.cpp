@@ -8,7 +8,7 @@
 #include <pylon/usb/BaslerUsbInstantCamera.h>
 
 BaslerCamera::BaslerCamera() {
-
+    configFileName = "";
 }
 
 void BaslerCamera::startAcquisition() {
@@ -57,7 +57,20 @@ void BaslerCamera::connectCamera() {
                 camera.Open(); // Need to access parameters
 
                 //Load values from configuration file
-                Pylon::CFeaturePersistence::Load(configFileName.c_str(), &camera.GetNodeMap(), true);
+                if (!configFileName.empty()) {
+                    Pylon::CFeaturePersistence::Load(configFileName.c_str(), &camera.GetNodeMap(), true);
+                }
+
+                //Here we should update all of the parameters for the camera
+                this->gain = camera.Gain.GetValue();
+                this->w = camera.Width.GetValue();
+                this->h = camera.Height.GetValue();
+                this->exposure_time = camera.ExposureTime.GetValue();
+                std::string pix_fmt = camera.PixelFormat.ToString().c_str();
+                if (pix_fmt == "Mono8") {
+                    this->bit_depth = 1;
+                }
+
             } else {
                 std::cout << "Camera was not able to be initialized. Is one connected?" << std::endl;
             }
@@ -75,7 +88,7 @@ int BaslerCamera::get_data(std::vector<uint8_t>& data_out) {
 
     Pylon::CGrabResultPtr ptrGrabResult;
 
-    if (camera.RetrieveResult(0, ptrGrabResult, Pylon::TimeoutHandling_Return)) {
+    while (camera.RetrieveResult(0, ptrGrabResult, Pylon::TimeoutHandling_Return)) {
 
         memcpy(&data_out.data()[0],ptrGrabResult->GetBuffer(),this->h*this->w);
 

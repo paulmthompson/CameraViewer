@@ -120,6 +120,11 @@ void MainWindow::connectCamera() {
             ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("Yes")));
             cams[cam_num]->startAcquisition();
 
+            //Our display frame needs to be able to receive the biggest frame possible.
+            if (cams[cam_num]->getWidth() * cams[cam_num]->getHeight() > this->img_to_display.size()) {
+                this->img_to_display.resize(cams[cam_num]->getWidth() * cams[cam_num]->getHeight());
+            }
+
         } else {
             std::cout << "Camera could not be connected" << std::endl;
             ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("No")));
@@ -272,8 +277,10 @@ void MainWindow::acquisitionLoop() {
 
         // Display
         if (this->viewActive) {
-            QImage img = QImage(&this->img_to_display[0],this->cams[this->cam_to_display]->getWidth(), this->cams[this->cam_to_display]->getHeight(), QImage::Format_Grayscale8);
-            updateCanvas(img);
+            if (num_frames_acquired > 0) {
+                QImage img = QImage(&this->img_to_display[0],this->cams[this->cam_to_display]->getWidth(), this->cams[this->cam_to_display]->getHeight(), QImage::Format_Grayscale8);
+                updateCanvas(img);
+            }
         }
 
         // If the cameras are no longer triggered and we were saving, or we were told to stop saving (but still have a trigger), we should close the file
@@ -369,10 +376,11 @@ void MainWindow::scanForCameras() {
 
     auto connected_camera_strings = b.scan();
 
-    for (auto& serial_num : connected_camera_strings) {
+    for (auto& serial_num : connected_camera_strings) { //This should return a pair of the model name and serial number I think so that both can be put in the table
         cams.push_back(std::unique_ptr<Camera>(b.copy_class()));
         cams[cams.size()-1]->assignID(cams.size()-1);
         cams[cams.size()-1]->assignSerial(serial_num);
+        updateCameraTable();
     }
 }
 

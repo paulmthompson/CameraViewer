@@ -15,6 +15,12 @@ Camera::Camera() {
    this->saveData = false;
    this->acquisitionActive = false;
    this->triggered = false;
+
+   exposure_time = 0.005f;
+   gain = 100.0f;
+   w = 640;
+   h = 480;
+   bit_depth = 8;
 }
 
 
