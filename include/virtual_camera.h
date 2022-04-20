@@ -16,7 +16,7 @@ public:
     }
 
     void connectCamera() override;
-    void get_data(std::vector<uint8_t>& data_out) override;
+    int get_data(std::vector<uint8_t>& data_out) override;
 
 private:
     int fps; // Use this for stress testing.

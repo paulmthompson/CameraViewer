@@ -43,7 +43,9 @@ private:
     QTimer* timer;
 
     void acquisitionLoop();
+    void initiateStopSequence();
     bool acquisitionActive;
+    bool recordMode;
 
     void updateCanvas(QImage& img);
     std::vector<uint8_t> img_to_display;
@@ -59,6 +61,7 @@ private slots:
     void addVirtualCamera();
     void connectCamera();
     void playButton();
+    void recordButton();
     void selectCameraInTable(int row, int column);
 
 };

@@ -47,6 +47,8 @@ MainWindow::MainWindow(QWidget *parent)
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &MainWindow::acquisitionLoop);
     acquisitionActive = false;
+    recordMode = false;
+
     img_to_display = std::vector<uint8_t>(480*640);
     cam_to_display = 0;
 
@@ -67,6 +69,7 @@ void MainWindow::addCallbacks() {
     connect(ui->connect_button,SIGNAL(clicked()),this,SLOT(connectCamera()));
     connect(ui->play_button,SIGNAL(clicked()),this,SLOT(playButton()));
     connect(ui->tableWidget,SIGNAL(cellClicked(int, int)),this,SLOT(selectCameraInTable(int, int)));
+    connect(ui->record_button,SIGNAL(clicked()),this,SLOT(recordButton()));
 }
 
 void MainWindow::drawConnected(Connected_Button_Color color) {
@@ -154,20 +157,13 @@ void MainWindow::updateCameraTable() {
 void MainWindow::playButton() {
 
     if (this->areCamerasConnected()) {
+
+        // If our cameras are running, we should initiate the stop sequence
+        // We want to tell our camera to stop acquiring new
         if (this->acquisitionActive) {
 
-            for (auto& cam : this->cams) {
-                if (cam->getAttached()) {
-                    cam->stopAcquisition();
-                }
-            }
-
-            //I should still be alerted if trailing frames come in right?
-
-            timer->stop();
+            initiateStopSequence();
             ui->play_button->setText(QString("Play"));
-            acquisitionActive = false;
-
         } else {
 
             for (auto& cam : this->cams) {
@@ -184,14 +180,48 @@ void MainWindow::playButton() {
     }
 }
 
+//Our cameras should first stop collecting frames
+void MainWindow::initiateStopSequence() {
+
+    for (auto& cam : this->cams) {
+        if (cam->getAttached()) {
+            cam->stopAcquisition();
+        }
+    }
+    acquisitionActive = false;
+
+}
+
+void MainWindow::recordButton() {
+
+    if (this->recordMode) {
+        this->recordMode = false;
+
+        ui->view_record_label->setText(QString::fromStdString("View Mode"));
+    } else {
+        this->recordMode = true;
+
+        ui->view_record_label->setText(QString::fromStdString("Record Mode"));
+    }
+
+    for (auto& cam : this->cams) {
+        if (cam->getAttached()) {
+            cam->setRecord(this->recordMode);
+        }
+    }
+
+}
+
 void MainWindow::acquisitionLoop() {
 
     QElapsedTimer timer2;
     timer2.start();
 
+    int num_frames_acquired = 0;
+
     for (auto& cam : this->cams) {
-        if (cam->getAttached() && cam->getAquisitionState()) {
-            cam->get_data(this->img_to_display);
+        if (cam->getAttached()) {
+            num_frames_acquired += cam->get_data(this->img_to_display);
         }
     }
 
@@ -209,6 +239,10 @@ void MainWindow::acquisitionLoop() {
     // Display
     QImage img = QImage(&this->img_to_display[0],this->cams[this->cam_to_display]->getWidth(), this->cams[this->cam_to_display]->getHeight(), QImage::Format_Grayscale8);
     updateCanvas(img);
+
+    if ((! this->acquisitionActive) &&(num_frames_acquired == 0 )){
+        this->timer->stop();
+    }
 }
 
 void MainWindow::updateCanvas(QImage& img)
@@ -227,7 +261,6 @@ bool MainWindow::areCamerasConnected() {
 }
 
 void MainWindow::selectCameraInTable(int row, int column) {
-
 
     updateModelandSerial(row);
 

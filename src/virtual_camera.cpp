@@ -33,20 +33,28 @@ void VirtualCamera::connectCamera() {
     this->attached = true;
 }
 
-void VirtualCamera::get_data(std::vector<uint8_t>& data_out) {
+int VirtualCamera::get_data(std::vector<uint8_t>& data_out) {
 
     // 1000 ms / 40 ms (loop speed) = 25 fps normally. We should loop in multiples of this
 
-    for (int j = 0; j < this->fps / 25; j++) {
+    int frames_acquired = 0;
+    if (this->acquisitionActive) {
 
-        memcpy(&data_out.data()[0],&random_nums[this->random_index++].data()[0],this->h*this->w);
+        for (int j = 0; j < this->fps / 25; j++) {
 
-        ve->writeFrameGray8(data_out);
+            memcpy(&data_out.data()[0],&random_nums[this->random_index++].data()[0],this->h*this->w);
 
-        if (random_index >= random_nums.size()) {
-            random_index = 0;
+            if (this->saveData) {
+                ve->writeFrameGray8(data_out);
+            }
+
+            if (random_index >= random_nums.size()) {
+                random_index = 0;
+            }
+            this->totalFramesAcquired++;
+            frames_acquired++;
         }
-        this->totalFramesAcquired++;
     }
+    return frames_acquired;
 }
 

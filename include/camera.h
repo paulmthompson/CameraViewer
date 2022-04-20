@@ -19,6 +19,7 @@ public:
     void setSave(std::string path, std::string name);
 
     void initializeVideoEncoder();
+    void stopVideoEncoder();
 
     virtual void connectCamera() {
 
@@ -30,14 +31,13 @@ public:
 
     void startAcquisition();
     void stopAcquisition();
+    void setRecord(bool record_state);
 
     virtual std::unique_ptr<Camera> copy_class() {
         return std::unique_ptr<Camera>(std::make_unique<Camera>());
     }
 
-    virtual void get_data(std::vector<uint8_t>& data_out) {
-
-    }
+    virtual int get_data(std::vector<uint8_t>& data_out) {return 0;} //This should return the number of frames acquired.
 
     void assignID(int id);
 

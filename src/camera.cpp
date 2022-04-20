@@ -11,6 +11,7 @@ Camera::Camera() {
    this->save_file_path = "./";
    this->save_file_name = "test.mp4";
    totalFramesAcquired = 0;
+   this->saveData = false;
 }
 
 void Camera::changeSize(int width, int height) {
@@ -20,6 +21,10 @@ void Camera::changeSize(int width, int height) {
 
 void Camera::assignID(int id) {
     this->id = id;
+}
+
+void Camera::setRecord(bool record_state) {
+    this->saveData = record_state;
 }
 
 /*
@@ -43,16 +48,17 @@ void Camera::setSave(std::string path, std::string name) {
 
 void Camera::startAcquisition() {
     this->acquisitionActive = true;
-    this->ve->openFile("test.mp4");
-    //Camera.StartGrabbing();
+    this->ve->openFile();
 }
 
 void Camera::stopAcquisition() {
     this->acquisitionActive = false;
     this->ve->closeFile();
-    //Camera.StopGrabbing();
 }
 
+
+//Create a video encoder object for the specified save path
+//Don't start writing the video yet
 void Camera::initializeVideoEncoder() {
 
     std::string full_path = this->save_file_path + this->save_file_name;
@@ -60,6 +66,15 @@ void Camera::initializeVideoEncoder() {
 
     this->ve->createContext(this->w,this->h,25);
     this->ve->set_pixel_format(GRAY8);
+}
+/*
+If we receive a stop signal from the GUI
+
+
+*/
+void Camera::stopVideoEncoder() {
+
+
 }
 
 /*
