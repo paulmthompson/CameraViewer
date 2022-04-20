@@ -5,8 +5,10 @@
 #include "camera.h"
 
 #include <memory>
-#include <random>
+#include <string>
 
+#include <pylon/PylonIncludes.h>
+#include <pylon/usb/BaslerUsbInstantCamera.h>
 
 class BaslerCamera : public Camera {
 public:
@@ -25,7 +27,8 @@ public:
     int get_data(std::vector<uint8_t>& data_out) override;
 
 private:
-
+    Pylon::CBaslerUsbInstantCamera camera;
+    std::string configFileName;
 };
 
 #endif // BASLER_CAMERA_H

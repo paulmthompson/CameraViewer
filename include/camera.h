@@ -5,8 +5,6 @@
 #include <vector>
 
 #include "videoencoder.h"
-//#include <pylon/PylonIncludes.h>
-//#include <pylon/usb/BaslerUsbInstantCamera.h>
 
 #include <memory>
 
@@ -90,8 +88,6 @@ protected:
     long totalFramesSaved;
 
     std::unique_ptr<VideoEncoder> ve;
-    // Pylon::CBaslerUsbInstantCamera camera // This should be in a specialized class.
-
 };
 
 
