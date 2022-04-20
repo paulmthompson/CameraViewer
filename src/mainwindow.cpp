@@ -55,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent)
     softwareTrigger = false;
 
     img_to_display = std::vector<uint8_t>(480*640);
-    cam_to_display = 0;
+    cam_to_display = 0; //Camera to display in the viewer
 
     loop_time = 40;
 
@@ -117,7 +117,9 @@ void MainWindow::connectCamera() {
         if (cams[cam_num]->getAttached()) {
             ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("Yes")));
             cams[cam_num]->startAcquisition();
+
         } else {
+            std::cout << "Camera could not be connected" << std::endl;
             ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("No")));
         }
     }
@@ -306,6 +308,8 @@ void MainWindow::selectCameraInTable(int row, int column) {
 
     updateModelandSerial(row);
 
+    this->cam_to_display = row;
+
     if (cams[row]->getAttached()) {
          drawConnected(green);
     } else {
@@ -332,7 +336,6 @@ void MainWindow::savePathButton() {
     } else {
         std::cout << "Can't change filename while you are already saving!" << std::endl;
     }
-
 }
 
 void MainWindow::changeFileNames() {
