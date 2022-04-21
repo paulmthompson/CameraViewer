@@ -6,7 +6,7 @@ Change camera resolution, bits, fps
 */
 
 Camera::Camera() {
-   ve = std::make_unique<VideoEncoder>();
+   ve = std::make_unique<ffmpeg_wrapper::VideoEncoder>();
    this->attached = false;
    this->save_file_path = "./";
    this->save_file_name = "test.mp4";
@@ -67,7 +67,7 @@ void Camera::initializeVideoEncoder() {
     ve->setSavePath(full_path);
 
     this->ve->createContext(this->w,this->h,25);
-    this->ve->set_pixel_format(GRAY8);
+    this->ve->set_pixel_format(ffmpeg_wrapper::GRAY8);
 }
 /*
 If we receive a stop signal from the GUI

@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "videoencoder.h"
+#include <ffmpeg_wrapper/videoencoder.h>
 
 #include <memory>
 
@@ -88,7 +88,7 @@ protected:
     long totalFramesAcquired;
     long totalFramesSaved;
 
-    std::unique_ptr<VideoEncoder> ve;
+    std::unique_ptr<ffmpeg_wrapper::VideoEncoder> ve;
 };
 
 
