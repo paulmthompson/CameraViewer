@@ -14,6 +14,7 @@
 class BaslerCamera : public Camera {
 public:
     BaslerCamera();
+    ~BaslerCamera();
 
     std::unique_ptr<Camera> copy_class() override {
         return std::unique_ptr<Camera>(std::make_unique<BaslerCamera>());

@@ -8,7 +8,12 @@
 #include <pylon/usb/BaslerUsbInstantCamera.h>
 
 BaslerCamera::BaslerCamera() {
+    Pylon::PylonInitialize();
     configFileName = "";
+}
+
+BaslerCamera::~BaslerCamera() {
+    Pylon::PylonTerminate();
 }
 
 void BaslerCamera::startAcquisition() {
@@ -104,8 +109,6 @@ int BaslerCamera::get_data(std::vector<uint8_t>& data_out) {
 }
 
 std::vector<std::string> BaslerCamera::scan() {
-
-    Pylon::PylonInitialize();
 
     std::vector<std::string> output = {};
 
