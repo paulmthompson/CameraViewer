@@ -28,9 +28,11 @@ void BaslerCamera::stopAcquisition() {
 
 void BaslerCamera::startTrigger() {
     this->triggered = true;
+    //camera.ExecuteSoftwareTrigger();
 }
 void BaslerCamera::stopTrigger() {
     this->triggered = false;
+    //camera.AcquisitionStop.Execute();
 }
 
 void BaslerCamera::connectCamera() {
@@ -59,6 +61,10 @@ void BaslerCamera::connectCamera() {
                 attached = true;
 
                 camera.MaxNumBuffer = 50;
+
+                //camera.RegisterConfiguration( new Pylon::CSoftwareTriggerConfiguration, Pylon::RegistrationMode_ReplaceAll, Pylon::Cleanup_Delete);
+                //camera.RegisterConfiguration(new Pylon::CAcquireContinuousConfiguration, Pylon::RegistrationMode_Append, Pylon::Cleanup_Delete);
+
                 camera.Open(); // Need to access parameters
 
                 //Load values from configuration file
@@ -75,6 +81,18 @@ void BaslerCamera::connectCamera() {
                 if (pix_fmt == "Mono8") {
                     this->bit_depth = 1;
                 }
+                //Configure the
+
+                // Select the Frame Start trigger
+                camera.TriggerSelector.SetValue(Basler_UsbCameraParams::TriggerSelector_FrameStart);
+
+                // Enable triggered image acquisition for the Frame Start trigger
+                camera.TriggerMode.SetValue(Basler_UsbCameraParams::TriggerMode_On);
+                // Set the trigger source for the Frame Start trigger to Software
+                camera.TriggerSource.SetValue(Basler_UsbCameraParams::TriggerSource_Software);
+                // Generate a software trigger signal
+                //
+                //Pylon::CSoftwareTriggerConfiguration
 
             } else {
                 std::cout << "Camera was not able to be initialized. Is one connected?" << std::endl;
@@ -90,6 +108,10 @@ void BaslerCamera::connectCamera() {
 int BaslerCamera::get_data(std::vector<uint8_t>& data_out) {
 
     int frames_acquired = 0;
+
+    if (this->triggered) {
+        camera.TriggerSoftware.Execute();
+    }
 
     Pylon::CGrabResultPtr ptrGrabResult;
 
