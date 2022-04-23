@@ -67,6 +67,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     save_file_path = QDir::currentPath().toStdString() + "/" + "test.mp4";
     ui->save_path_label->setText(QString::fromStdString(save_file_path));
+
+    ui->tableWidget->setColumnCount(3);
+    ui->tableWidget->setColumnWidth(0,20);
+    ui->tableWidget->setColumnWidth(1,100);
+    ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
 }
 
 MainWindow::~MainWindow()
@@ -157,7 +162,7 @@ void MainWindow::updateCameraTable() {
     for (auto& cam : this->cams) {
         ui->tableWidget->insertRow(ui->tableWidget->rowCount());
         ui->tableWidget->setItem(current_row,0,new QTableWidgetItem(QString::number(current_row)));
-        ui->tableWidget->setItem(current_row,1,new QTableWidgetItem(QString::fromStdString(cam->getModel())));
+        ui->tableWidget->setItem(current_row,1,new QTableWidgetItem(QString::fromStdString(cam->getSerial())));
         if (cam->getAttached()) {
             ui->tableWidget->setItem(current_row,2,new QTableWidgetItem(QString::fromStdString("Yes")));
         } else {

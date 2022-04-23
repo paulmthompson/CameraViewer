@@ -365,6 +365,12 @@
            <height>101</height>
           </rect>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>231</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="selectionMode">
           <enum>QAbstractItemView::SingleSelection</enum>
          </property>
@@ -396,7 +402,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Model</string>
+           <string>S/N</string>
           </property>
           <property name="foreground">
            <brush brushstyle="SolidPattern">

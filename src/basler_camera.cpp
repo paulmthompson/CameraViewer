@@ -28,11 +28,10 @@ void BaslerCamera::stopAcquisition() {
 
 void BaslerCamera::startTrigger() {
     this->triggered = true;
-    //camera.ExecuteSoftwareTrigger();
+
 }
 void BaslerCamera::stopTrigger() {
     this->triggered = false;
-    //camera.AcquisitionStop.Execute();
 }
 
 void BaslerCamera::connectCamera() {

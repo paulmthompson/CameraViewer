@@ -19,9 +19,7 @@ public:
     void initializeVideoEncoder();
     void stopVideoEncoder();
 
-    virtual void connectCamera() {
-
-    }
+    virtual void connectCamera() {}
 
     void changeSize(int width, int height);
     void changeExposureTime(float exposure);
