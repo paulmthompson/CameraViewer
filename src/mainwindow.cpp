@@ -260,7 +260,12 @@ void MainWindow::acquisitionLoop() {
         //Cameras in the "active" state will return frames if they have them.
         for (auto& cam : this->cams) {
             if (cam->getAttached() && cam->getAquisitionState()) {
-                num_frames_acquired += cam->get_data(this->img_to_display);
+                if (cam->getID() == this->cam_to_display) {
+                    num_frames_acquired += cam->get_data(this->img_to_display);
+                } else {
+                    num_frames_acquired += cam->get_data();
+                }
+
             }
         }
 

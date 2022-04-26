@@ -35,7 +35,8 @@ public:
         return std::unique_ptr<Camera>(std::make_unique<Camera>());
     }
 
-    virtual int get_data(std::vector<uint8_t>& data_out) {return 0;} //This should return the number of frames acquired.
+    int get_data();
+    int get_data(std::vector<uint8_t>& data_out); //This should return the number of frames acquired.
 
     void assignID(int id) {this->id = id;}
     void assignSerial(std::string serial) {this->serial_num = serial;}
@@ -86,7 +87,11 @@ protected:
     long totalFramesAcquired;
     long totalFramesSaved;
 
+    std::vector<uint8_t> img;
+
     std::unique_ptr<ffmpeg_wrapper::VideoEncoder> ve;
+
+    virtual int doGetData() {return 0;}
 };
 
 

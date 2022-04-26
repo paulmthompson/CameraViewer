@@ -6,6 +6,7 @@ Change camera resolution, bits, fps
 */
 
 Camera::Camera() {
+   id = 0;
    ve = std::make_unique<ffmpeg_wrapper::VideoEncoder>();
    this->attached = false;
    this->save_file_path = "./";
@@ -21,12 +22,15 @@ Camera::Camera() {
    w = 640;
    h = 480;
    bit_depth = 8;
+
+   img = std::vector<uint8_t>(w * h);
 }
 
 
 void Camera::changeSize(int width, int height) {
     this->w = width;
     this->h = height;
+    this->img.resize(this->w * this->h);
 }
 
 void Camera::setRecord(bool record_state) {
@@ -51,6 +55,18 @@ void Camera::setConfig(std::string path, std::string name) {
 void Camera::setSave(std::string path, std::string name) {
     this->save_file_path = path;
     this->save_file_name = name;
+}
+
+int Camera::get_data() {
+    return this->doGetData();
+}
+
+int Camera::get_data(std::vector<uint8_t>& input_data) {
+    int framesCollected = doGetData();
+
+    input_data = this->img;
+
+    return framesCollected;
 }
 
 /*

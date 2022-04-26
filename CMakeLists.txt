@@ -18,15 +18,25 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Multimedia)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS MultimediaWidgets)
 
-set(BASLER_PATH "C:\\Program\ Files\\Basler\\pylon\ 6\\Development\\lib\\x64")
+#set(BASLER_PATH "C:\\Program\ Files\\Basler\\pylon\ 6\\Development\\lib\\x64")
+set(BASLER_PATH "/opt/pylon5/lib64")
 
-find_library(PYLON_BASE_LIBRARY PylonBase_v6_1 HINTS ${BASLER_PATH})
-find_library(PYLON_GENAPI_LIBRARY GenApi_MD_VC141_v3_1_Basler_pylon HINTS ${BASLER_PATH})
-find_library(PYLON_GCBASE_LIBRARY GCBase_MD_VC141_v3_1_Basler_pylon HINTS ${BASLER_PATH})
-find_library(PYLON_UTILITY_LIBRARY PylonUtility_v6_1 HINTS ${BASLER_PATH})
+#find_library(PYLON_BASE_LIBRARY PylonBase_v6_1 HINTS ${BASLER_PATH})
+#find_library(PYLON_GENAPI_LIBRARY GenApi_MD_VC141_v3_1_Basler_pylon HINTS ${BASLER_PATH})
+#find_library(PYLON_GCBASE_LIBRARY GCBase_MD_VC141_v3_1_Basler_pylon HINTS ${BASLER_PATH})
+#find_library(PYLON_UTILITY_LIBRARY PylonUtility_v6_1 HINTS ${BASLER_PATH})
 
-include_directories("C:\\Program\ Files\\Basler\\pylon\ 6\\Development\\include")
-find_package(ffmpeg_wrapper CONFIG REQUIRED PATHS "C:\\Users\\wanglab\\Documents\\ffmpeg_wrapper\\build\\test")
+find_library(PYLON_BASE_LIBRARY pylonbase HINTS ${BASLER_PATH})
+find_library(PYLON_GENAPI_LIBRARY GenApi_gcc_v3_1_Basler_pylon HINTS ${BASLER_PATH})
+find_library(PYLON_GCBASE_LIBRARY GCBase_gcc_v3_1_Basler_pylon HINTS ${BASLER_PATH})
+find_library(PYLON_UTILITY_LIBRARY pylonutility HINTS ${BASLER_PATH})
+
+
+include_directories("/opt/pylon5/include")
+find_package(ffmpeg_wrapper CONFIG REQUIRED PATHS "/home/wanglab/Documents/ffmpeg_wrapper/build/test")
+
+#include_directories("C:\\Program\ Files\\Basler\\pylon\ 6\\Development\\include")
+#find_package(ffmpeg_wrapper CONFIG REQUIRED PATHS "C:\\Users\\wanglab\\Documents\\ffmpeg_wrapper\\build\\test")
 
 set(PROJECT_SOURCES
         src/main.cpp
@@ -42,6 +52,12 @@ set(PROJECT_SOURCES
         include/basler_camera.h
         src/basler_camera.cpp
 )
+
+
+if(NOT APPLE)
+    set(CMAKE_INSTALL_RPATH $ORIGIN)
+endif()
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(CameraViewer

@@ -21,13 +21,14 @@ public:
     void stopTrigger() override {this->triggered = false;}
 
     void connectCamera() override;
-    int get_data(std::vector<uint8_t>& data_out) override;
 
 private:
     int fps; // Use this for stress testing.
 
     std::vector<std::vector<uint8_t>> random_nums;
     int random_index;
+
+    int doGetData() override;
 };
 
 #endif // VIRTUAL_CAMERA_H

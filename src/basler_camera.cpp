@@ -104,7 +104,7 @@ void BaslerCamera::connectCamera() {
     this->attached = true;
 }
 
-int BaslerCamera::get_data(std::vector<uint8_t>& data_out) {
+int BaslerCamera::doGetData() {
 
     int frames_acquired = 0;
 
@@ -116,10 +116,10 @@ int BaslerCamera::get_data(std::vector<uint8_t>& data_out) {
 
     while (camera.RetrieveResult(0, ptrGrabResult, Pylon::TimeoutHandling_Return)) {
 
-        memcpy(&data_out.data()[0],ptrGrabResult->GetBuffer(),this->h*this->w);
+        memcpy(&this->img.data()[0],ptrGrabResult->GetBuffer(),this->h*this->w);
 
         if (this->saveData) {
-            ve->writeFrameGray8(data_out);
+            ve->writeFrameGray8(this->img);
             this->totalFramesSaved++;
         }
         this->totalFramesAcquired++;

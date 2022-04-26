@@ -28,11 +28,11 @@ public:
     void stopTrigger() override;
 
     void connectCamera() override;
-    int get_data(std::vector<uint8_t>& data_out) override;
 
 private:
     Pylon::CBaslerUsbInstantCamera camera;
     std::string configFileName;
+    int doGetData() override;
 };
 
 #endif // BASLER_CAMERA_H
