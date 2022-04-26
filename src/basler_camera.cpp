@@ -27,10 +27,12 @@ void BaslerCamera::stopAcquisition() {
 }
 
 void BaslerCamera::startTrigger() {
+    camera.TriggerSource.SetValue(Basler_UsbCameraParams::TriggerSource_Software);
     this->triggered = true;
-
 }
+
 void BaslerCamera::stopTrigger() {
+    camera.TriggerSource.SetValue(Basler_UsbCameraParams::TriggerSource_Line3);
     this->triggered = false;
 }
 
@@ -88,7 +90,8 @@ void BaslerCamera::connectCamera() {
                 // Enable triggered image acquisition for the Frame Start trigger
                 camera.TriggerMode.SetValue(Basler_UsbCameraParams::TriggerMode_On);
                 // Set the trigger source for the Frame Start trigger to Software
-                camera.TriggerSource.SetValue(Basler_UsbCameraParams::TriggerSource_Software);
+                //camera.TriggerSource.SetValue(Basler_UsbCameraParams::TriggerSource_Software);
+                camera.TriggerSource.SetValue(Basler_UsbCameraParams::TriggerSource_Line3);
                 // Generate a software trigger signal
                 //
                 //Pylon::CSoftwareTriggerConfiguration
