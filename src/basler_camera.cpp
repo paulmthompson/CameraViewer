@@ -36,7 +36,7 @@ void BaslerCamera::stopTrigger() {
     this->triggered = false;
 }
 
-void BaslerCamera::connectCamera() {
+void BaslerCamera::doConnectCamera() {
 
     // Get the transport layer factory.
     Pylon::CTlFactory& tlFactory = Pylon::CTlFactory::GetInstance();
@@ -59,7 +59,6 @@ void BaslerCamera::connectCamera() {
             if (camera.IsPylonDeviceAttached())
             {
                 std::cout << "Using device " << camera.GetDeviceInfo().GetModelName() << std::endl;
-                attached = true;
 
                 camera.MaxNumBuffer = 50;
 

@@ -20,8 +20,6 @@ public:
     void startTrigger() override {this->triggered = true;}
     void stopTrigger() override {this->triggered = false;}
 
-    void connectCamera() override;
-
 private:
     int fps; // Use this for stress testing.
 
@@ -29,6 +27,7 @@ private:
     int random_index;
 
     int doGetData() override;
+    void doConnectCamera() override;
 };
 
 #endif // VIRTUAL_CAMERA_H

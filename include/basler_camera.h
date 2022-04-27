@@ -27,12 +27,11 @@ public:
     void startTrigger() override;
     void stopTrigger() override;
 
-    void connectCamera() override;
-
 private:
     Pylon::CBaslerUsbInstantCamera camera;
     std::string configFileName;
     int doGetData() override;
+    void doConnectCamera() override;
 
     void set_trigger(Basler_UsbCameraParams::TriggerSourceEnums trigger_line);
 };

@@ -116,23 +116,28 @@ void MainWindow::connectCamera() {
     if (select->hasSelection()) {
         int cam_num =  select->selectedRows()[0].data().toInt();
 
-        drawConnected(green);
-        changeFileNames(cams[cam_num]);
-
-        cams[cam_num]->connectCamera();
-
         if (cams[cam_num]->getAttached()) {
-            ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("Yes")));
-            cams[cam_num]->startAcquisition();
-
-            //Our display frame needs to be able to receive the biggest frame possible.
-            if (cams[cam_num]->getWidth() * cams[cam_num]->getHeight() > this->img_to_display.size()) {
-                this->img_to_display.resize(cams[cam_num]->getWidth() * cams[cam_num]->getHeight());
-            }
-
+            std::cout << "Camera is already connected" << std::endl;
         } else {
-            std::cout << "Camera could not be connected" << std::endl;
-            ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("No")));
+
+            drawConnected(green);
+            changeFileNames(cams[cam_num]);
+
+            cams[cam_num]->connectCamera();
+
+            if (cams[cam_num]->getAttached()) { // We don't want to run these if we are already attached
+                ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("Yes")));
+                cams[cam_num]->startAcquisition();
+
+                //Our display frame needs to be able to receive the biggest frame possible.
+                if (cams[cam_num]->getWidth() * cams[cam_num]->getHeight() > this->img_to_display.size()) {
+                    this->img_to_display.resize(cams[cam_num]->getWidth() * cams[cam_num]->getHeight());
+                }
+
+            } else {
+                std::cout << "Camera could not be connected" << std::endl;
+                ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("No")));
+            }
         }
     }
 }

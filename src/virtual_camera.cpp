@@ -29,7 +29,7 @@ VirtualCamera::VirtualCamera() {
     }
 }
 
-void VirtualCamera::connectCamera() {
+void VirtualCamera::doConnectCamera() {
     this->attached = true;
 }
 

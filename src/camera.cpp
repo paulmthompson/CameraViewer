@@ -69,6 +69,12 @@ int Camera::get_data(std::vector<uint8_t>& input_data) {
     return framesCollected;
 }
 
+void Camera::connectCamera() {
+    if (!this->attached) {
+        this->doConnectCamera();
+    }
+}
+
 /*
 
 
