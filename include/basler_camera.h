@@ -33,6 +33,8 @@ private:
     Pylon::CBaslerUsbInstantCamera camera;
     std::string configFileName;
     int doGetData() override;
+
+    void set_trigger(Basler_UsbCameraParams::TriggerSourceEnums trigger_line);
 };
 
 #endif // BASLER_CAMERA_H

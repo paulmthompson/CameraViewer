@@ -73,3 +73,4 @@ Thumbs.db
 *.exe
 
 CMakeLists.txt.*
+CMakeLists.txt.user

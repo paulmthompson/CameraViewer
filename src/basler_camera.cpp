@@ -27,12 +27,12 @@ void BaslerCamera::stopAcquisition() {
 }
 
 void BaslerCamera::startTrigger() {
-    camera.TriggerSource.SetValue(Basler_UsbCameraParams::TriggerSource_Software);
+    set_trigger(Basler_UsbCameraParams::TriggerSource_Software);
     this->triggered = true;
 }
 
 void BaslerCamera::stopTrigger() {
-    camera.TriggerSource.SetValue(Basler_UsbCameraParams::TriggerSource_Line3);
+    set_trigger(Basler_UsbCameraParams::TriggerSource_Line3);
     this->triggered = false;
 }
 
@@ -82,19 +82,8 @@ void BaslerCamera::connectCamera() {
                 if (pix_fmt == "Mono8") {
                     this->bit_depth = 1;
                 }
-                //Configure the
 
-                // Select the Frame Start trigger
-                camera.TriggerSelector.SetValue(Basler_UsbCameraParams::TriggerSelector_FrameStart);
-
-                // Enable triggered image acquisition for the Frame Start trigger
-                camera.TriggerMode.SetValue(Basler_UsbCameraParams::TriggerMode_On);
-                // Set the trigger source for the Frame Start trigger to Software
-                //camera.TriggerSource.SetValue(Basler_UsbCameraParams::TriggerSource_Software);
-                camera.TriggerSource.SetValue(Basler_UsbCameraParams::TriggerSource_Line3);
-                // Generate a software trigger signal
-                //
-                //Pylon::CSoftwareTriggerConfiguration
+                set_trigger(Basler_UsbCameraParams::TriggerSource_Line3);
 
             } else {
                 std::cout << "Camera was not able to be initialized. Is one connected?" << std::endl;
@@ -105,6 +94,19 @@ void BaslerCamera::connectCamera() {
     }
 
     this->attached = true;
+}
+
+void BaslerCamera::set_trigger(Basler_UsbCameraParams::TriggerSourceEnums trigger_line) {
+
+    //camera.AcquisitionMode.SetValue(Basler_UsbCameraParams::AcquisitionMode_SingleFrame);
+
+    camera.TriggerSelector.SetValue(Basler_UsbCameraParams::TriggerSelector_FrameStart);
+
+    camera.TriggerMode.SetValue(Basler_UsbCameraParams::TriggerMode_On);
+
+    camera.TriggerSource.SetValue(trigger_line);
+
+    camera.TriggerActivation.SetValue(Basler_UsbCameraParams::TriggerActivation_RisingEdge);
 }
 
 int BaslerCamera::doGetData() {
