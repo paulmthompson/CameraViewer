@@ -127,6 +127,7 @@ void MainWindow::connectCamera() {
 
             if (cams[cam_num]->getAttached()) { // We don't want to run these if we are already attached
                 ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("Yes")));
+
                 cams[cam_num]->startAcquisition();
 
                 //Our display frame needs to be able to receive the biggest frame possible.
@@ -344,11 +345,21 @@ void MainWindow::selectCameraInTable(int row, int column) {
 void MainWindow::savePathButton() {
 
     if (! this->recordMode) {
-        QString vid_name =  QFileDialog::getSaveFileName(
-                    this,
-                    "Save File Name",
-                    QDir::currentPath(),
-                    "MP4 (*.mp4)");
+        auto dial = QFileDialog(this,"Save File Name", QDir::currentPath(),"MP4 (*.mp4)");
+
+        QFile file(":/cameraviewer.qss");
+        file.open(QFile::ReadOnly);
+        QString styleSheet { QLatin1String(file.readAll()) };
+        //dial.setStyleSheet(styleSheet);
+        dial.setStyleSheet("QPushButton { background-color: red }");
+
+        QString vid_name =  dial.getSaveFileName();
+
+        //auto dial = QFileDialog::getSaveFileName(
+         //                   this,
+          //                  "Save File Name",
+           //                 QDir::currentPath(),
+            //                "MP4 (*.mp4)");
         if (!vid_name.isEmpty()) {
 
             this->save_file_path = vid_name.toStdString();

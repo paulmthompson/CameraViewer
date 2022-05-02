@@ -3,13 +3,14 @@
 
 #include <memory>
 #include <iostream>
+#include <filesystem>
 
 #include <pylon/PylonIncludes.h>
 #include <pylon/usb/BaslerUsbInstantCamera.h>
 
 BaslerCamera::BaslerCamera() {
     Pylon::PylonInitialize();
-    configFileName = "";
+    configFileName = "default.pfs";
 }
 
 BaslerCamera::~BaslerCamera() {
@@ -69,7 +70,12 @@ void BaslerCamera::doConnectCamera() {
 
                 //Load values from configuration file
                 if (!configFileName.empty()) {
-                    Pylon::CFeaturePersistence::Load(configFileName.c_str(), &camera.GetNodeMap(), true);
+                    if (std::filesystem::exists(this->configFileName)) {
+                        Pylon::CFeaturePersistence::Load(configFileName.c_str(), &camera.GetNodeMap(), true);
+                        std::cout << "Configuration file " << this->configFileName << " loaded" << std::endl;
+                    } else {
+                        std::cout << "Could not find configuration file: " << this->configFileName << std::endl;
+                    }
                 }
 
                 //Here we should update all of the parameters for the camera
@@ -149,4 +155,18 @@ std::vector<std::string> BaslerCamera::scan() {
         }
         return output;
     }
+}
+
+bool BaslerCamera::doChangeGain(float new_gain) {
+
+    camera.Gain.SetValue(new_gain);
+
+    return true;
+}
+
+bool BaslerCamera::doChangeExposure(float new_exposure) {
+
+    camera.ExposureTime.SetValue(new_exposure);
+
+    return true;
 }

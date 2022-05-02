@@ -26,6 +26,8 @@ public:
     void stopAcquisition() override;
     void startTrigger() override;
     void stopTrigger() override;
+    bool doChangeGain(float new_gain) override;
+    bool doChangeExposure(float new_exposure) override;
 
 private:
     Pylon::CBaslerUsbInstantCamera camera;

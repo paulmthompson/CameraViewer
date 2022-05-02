@@ -93,6 +93,8 @@ protected:
 
     virtual int doGetData() {return 0;}
     virtual void doConnectCamera() {}
+    virtual bool doChangeGain(float new_gain) {return 0;}
+    virtual bool doChangeExposure(float new_exposure) {return 0;}
 };
 
 

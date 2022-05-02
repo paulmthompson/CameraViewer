@@ -107,9 +107,11 @@ Camera properties
 
 void Camera::changeExposureTime(float exposure) {
     this->exposure_time = exposure;
+    doChangeExposure(exposure );
 }
 
 void Camera::changeGain(float new_gain) {
     this->gain = new_gain;
+    doChangeGain(new_gain);
 }
 

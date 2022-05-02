@@ -1,11 +1,19 @@
 
 QWidget{
-        color: rgb(221, 221, 221);
+         color: rgb(221, 221, 221);
 /*       font: 10pt "Segoe UI"; */
 }
 
 QLabel {
     text-align: center;
+}
+
+QTreeView {
+    color: rgb(0,0,0);
+}
+
+QListView {
+    color: rgb(0,0,0);
 }
 
 #Whole_Frame {
@@ -99,7 +107,14 @@ QLabel {
 
 #tableWidget {
     color: rgb(0,0,0);
-/*    background-color: rgb(0,0,0); */
+}
+
+#gain_box {
+    color: rgb(0,0,0);
+}
+
+#exposure_box {
+    color: rgb(0,0,0);
 }
 
 
