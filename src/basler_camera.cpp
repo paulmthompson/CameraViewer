@@ -37,7 +37,7 @@ void BaslerCamera::stopTrigger() {
     this->triggered = false;
 }
 
-void BaslerCamera::doConnectCamera() {
+bool BaslerCamera::doConnectCamera() {
 
     // Get the transport layer factory.
     Pylon::CTlFactory& tlFactory = Pylon::CTlFactory::GetInstance();
@@ -92,13 +92,16 @@ void BaslerCamera::doConnectCamera() {
 
             } else {
                 std::cout << "Camera was not able to be initialized. Is one connected?" << std::endl;
+                return false;
             }
         } else {
             std::cout << "Not matched serial number for " << devices[i].GetSerialNumber() << std::endl;
+            return false;
         }
     }
 
     this->attached = true;
+    return true;
 }
 
 void BaslerCamera::set_trigger(Basler_UsbCameraParams::TriggerSourceEnums trigger_line) {

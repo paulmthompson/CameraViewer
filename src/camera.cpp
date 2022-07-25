@@ -69,9 +69,21 @@ int Camera::get_data(std::vector<uint8_t>& input_data) {
     return framesCollected;
 }
 
-void Camera::connectCamera() {
+/*
+Returns true if camera is successfully connected
+Returns false if camera is not able to be connected, or was already connected
+*/
+bool Camera::connectCamera() {
     if (!this->attached) {
-        this->doConnectCamera();
+        if (this->doConnectCamera()) {
+            return true;
+        } else {
+            std::cout << "Camera could not be connected" << std::endl;
+            return false;
+        }
+    } else {
+        std::cout << "Camera is already connected" << std::endl;
+        return false;
     }
 }
 

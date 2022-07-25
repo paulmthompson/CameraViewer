@@ -19,7 +19,7 @@ public:
     void initializeVideoEncoder();
     void stopVideoEncoder();
 
-    void connectCamera();
+    bool connectCamera();
 
     void changeSize(int width, int height);
     void changeExposureTime(float exposure);
@@ -92,7 +92,7 @@ protected:
     std::unique_ptr<ffmpeg_wrapper::VideoEncoder> ve;
 
     virtual int doGetData() {return 0;}
-    virtual void doConnectCamera() {}
+    virtual bool doConnectCamera() {}
     virtual bool doChangeGain(float new_gain) {return 0;}
     virtual bool doChangeExposure(float new_exposure) {return 0;}
 };

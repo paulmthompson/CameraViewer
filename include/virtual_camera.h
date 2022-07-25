@@ -27,7 +27,7 @@ private:
     int random_index;
 
     int doGetData() override;
-    void doConnectCamera() override;
+    bool doConnectCamera() override;
 };
 
 #endif // VIRTUAL_CAMERA_H

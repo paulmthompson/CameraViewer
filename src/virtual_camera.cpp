@@ -29,8 +29,9 @@ VirtualCamera::VirtualCamera() {
     }
 }
 
-void VirtualCamera::doConnectCamera() {
+bool VirtualCamera::doConnectCamera() {
     this->attached = true;
+    return true;
 }
 
 int VirtualCamera::doGetData() {

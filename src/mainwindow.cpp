@@ -116,16 +116,12 @@ void MainWindow::connectCamera() {
     if (select->hasSelection()) {
         int cam_num =  select->selectedRows()[0].data().toInt();
 
-        if (cams[cam_num]->getAttached()) {
-            std::cout << "Camera is already connected" << std::endl;
-        } else {
+        if (!cams[cam_num]->getAttached()) {
 
             drawConnected(green);
             changeFileNames(cams[cam_num]);
 
-            cams[cam_num]->connectCamera();
-
-            if (cams[cam_num]->getAttached()) { // We don't want to run these if we are already attached
+            if (cams[cam_num]->connectCamera()) { 
                 ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("Yes")));
 
                 cams[cam_num]->startAcquisition();
@@ -136,7 +132,6 @@ void MainWindow::connectCamera() {
                 }
 
             } else {
-                std::cout << "Camera could not be connected" << std::endl;
                 ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("No")));
             }
         }
