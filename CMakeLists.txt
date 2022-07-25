@@ -35,6 +35,9 @@ find_library(PYLON_UTILITY_LIBRARY pylonutility HINTS ${BASLER_PATH})
 include_directories("/opt/pylon5/include")
 find_package(ffmpeg_wrapper CONFIG REQUIRED PATHS "/home/wanglab/Documents/ffmpeg_wrapper/build/test")
 
+find_package(nlohmann_json CONFIG REQUIRED)
+
+
 #include_directories("C:\\Program\ Files\\Basler\\pylon\ 6\\Development\\include")
 #find_package(ffmpeg_wrapper CONFIG REQUIRED PATHS "C:\\Users\\wanglab\\Documents\\ffmpeg_wrapper\\build\\test")
 
@@ -94,6 +97,8 @@ target_link_libraries(CameraViewer PRIVATE
 )
 
 target_link_libraries(CameraViewer PRIVATE ffmpeg_wrapper::ffmpeg_wrapper)
+
+target_link_libraries(CameraViewer PRIVATE nlohmann_json::nlohmann_json)
 
 set_target_properties(CameraViewer PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
