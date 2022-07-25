@@ -92,7 +92,7 @@ protected:
     std::unique_ptr<ffmpeg_wrapper::VideoEncoder> ve;
 
     virtual int doGetData() {return 0;}
-    virtual bool doConnectCamera() {}
+    virtual bool doConnectCamera() {return false;}
     virtual bool doChangeGain(float new_gain) {return 0;}
     virtual bool doChangeExposure(float new_exposure) {return 0;}
 };
