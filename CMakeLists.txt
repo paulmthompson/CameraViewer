@@ -11,8 +11,6 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include_directories("include")
-
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Multimedia)
@@ -48,12 +46,13 @@ set(PROJECT_SOURCES
         src/mainwindow.ui
         cameraviewer.qss
         cameraviewer.qrc
-        include/camera.h
-        src/camera.cpp
-        src/virtual_camera.cpp
-        include/virtual_camera.h
-        include/basler_camera.h
-        src/basler_camera.cpp
+
+        camera/camera.h
+        camera/camera.cpp
+        camera/virtual_camera.cpp
+        camera/virtual_camera.h
+        camera/basler_camera.h
+        camera/basler_camera.cpp
 )
 
 
@@ -84,6 +83,13 @@ else()
         )
     endif()
 endif()
+
+target_include_directories(CameraViewer PRIVATE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/camera>
+
+    $<INSTALL_INTERFACE:include>
+    $<INSTALL_INTERFACE:camera>)
 
 target_link_libraries(CameraViewer PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(CameraViewer PRIVATE Qt${QT_VERSION_MAJOR}::Multimedia)
