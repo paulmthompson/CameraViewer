@@ -1,5 +1,5 @@
 
-#include "camera.h"
+#include "include/camera.h"
 
 /*
 Change camera resolution, bits, fps

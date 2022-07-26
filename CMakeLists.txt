@@ -16,28 +16,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Multimedia)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS MultimediaWidgets)
 
-#set(BASLER_PATH "C:\\Program\ Files\\Basler\\pylon\ 6\\Development\\lib\\x64")
-set(BASLER_PATH "/opt/pylon5/lib64")
-
-#find_library(PYLON_BASE_LIBRARY PylonBase_v6_1 HINTS ${BASLER_PATH})
-#find_library(PYLON_GENAPI_LIBRARY GenApi_MD_VC141_v3_1_Basler_pylon HINTS ${BASLER_PATH})
-#find_library(PYLON_GCBASE_LIBRARY GCBase_MD_VC141_v3_1_Basler_pylon HINTS ${BASLER_PATH})
-#find_library(PYLON_UTILITY_LIBRARY PylonUtility_v6_1 HINTS ${BASLER_PATH})
-
-find_library(PYLON_BASE_LIBRARY pylonbase HINTS ${BASLER_PATH})
-find_library(PYLON_GENAPI_LIBRARY GenApi_gcc_v3_1_Basler_pylon HINTS ${BASLER_PATH})
-find_library(PYLON_GCBASE_LIBRARY GCBase_gcc_v3_1_Basler_pylon HINTS ${BASLER_PATH})
-find_library(PYLON_UTILITY_LIBRARY pylonutility HINTS ${BASLER_PATH})
-
-
-include_directories("/opt/pylon5/include")
-find_package(ffmpeg_wrapper CONFIG REQUIRED PATHS "/home/wanglab/Documents/ffmpeg_wrapper/build/test")
-
-find_package(nlohmann_json CONFIG REQUIRED)
-
-
-#include_directories("C:\\Program\ Files\\Basler\\pylon\ 6\\Development\\include")
-#find_package(ffmpeg_wrapper CONFIG REQUIRED PATHS "C:\\Users\\wanglab\\Documents\\ffmpeg_wrapper\\build\\test")
+add_subdirectory(camera)
 
 set(PROJECT_SOURCES
         src/main.cpp
@@ -46,13 +25,6 @@ set(PROJECT_SOURCES
         src/mainwindow.ui
         cameraviewer.qss
         cameraviewer.qrc
-
-        camera/camera.h
-        camera/camera.cpp
-        camera/virtual_camera.cpp
-        camera/virtual_camera.h
-        camera/basler_camera.h
-        camera/basler_camera.cpp
 )
 
 
@@ -85,26 +57,17 @@ else()
 endif()
 
 target_include_directories(CameraViewer PRIVATE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/camera>
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/camera/include>"
 
-    $<INSTALL_INTERFACE:include>
-    $<INSTALL_INTERFACE:camera>)
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:include>"
+)
 
 target_link_libraries(CameraViewer PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(CameraViewer PRIVATE Qt${QT_VERSION_MAJOR}::Multimedia)
 target_link_libraries(CameraViewer PRIVATE Qt${QT_VERSION_MAJOR}::MultimediaWidgets)
 
-target_link_libraries(CameraViewer PRIVATE
-    ${PYLON_BASE_LIBRARY}
-    ${PYLON_GENAPI_LIBRARY}
-    ${PYLON_GCBASE_LIBRARY}
-    ${PYLON_UTILITY_LIBRARY}
-)
-
-target_link_libraries(CameraViewer PRIVATE ffmpeg_wrapper::ffmpeg_wrapper)
-
-target_link_libraries(CameraViewer PRIVATE nlohmann_json::nlohmann_json)
+target_link_libraries(CameraViewer PRIVATE camera)
 
 set_target_properties(CameraViewer PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
