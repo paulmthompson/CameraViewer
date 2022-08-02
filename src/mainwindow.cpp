@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <numeric>
 
-#include "virtual_camera.h"
+#include "camera/cameras/virtual/virtual_camera.h"
 #include "basler_camera.h"
 
 #include <QGraphicsPixmapItem>
