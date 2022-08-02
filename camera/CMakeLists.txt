@@ -13,8 +13,7 @@ set(FFMPEG_WRAPPER_PATH "/home/wanglab/Documents/ffmpeg_wrapper/build/test")
 #set(FFMPEG_WRAPPER_PATH "C:\\Users\\wanglab\\Documents\\ffmpeg_wrapper\\build\\test")
 
 
-add_library(camera SHARED include/camera.h
-                        camera.cpp
+add_library(camera SHARED API/camera.hpp
                         basler_camera.cpp
                         include/basler_camera.h
                         include/virtual_camera.h
@@ -33,13 +32,11 @@ find_library(PYLON_UTILITY_LIBRARY pylonutility HINTS ${BASLER_PATH})
 #find_library(PYLON_GCBASE_LIBRARY GCBase_MD_VC141_v3_1_Basler_pylon HINTS ${BASLER_PATH})
 #find_library(PYLON_UTILITY_LIBRARY PylonUtility_v6_1 HINTS ${BASLER_PATH})
 
-message(STATUS ${ffmpeg_wrapper_INCLUDE_DIRS})
-
-target_include_directories(camera PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>"
-                                            "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
-                                        PUBLIC ${BASLER_INCLUDE_PATH}
+target_include_directories(camera PUBLIC
+                                    "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>"
+                                    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
+                                     ${BASLER_INCLUDE_PATH}
 )
-
 
 target_link_libraries(camera PRIVATE
      ${PYLON_BASE_LIBRARY}

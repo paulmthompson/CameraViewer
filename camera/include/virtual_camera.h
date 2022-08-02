@@ -1,7 +1,7 @@
 #ifndef VIRTUAL_CAMERA_H
 #define VIRTUAL_CAMERA_H
 
-#include "camera.h"
+#include "API/camera.hpp"
 
 #include <memory>
 #include <random>

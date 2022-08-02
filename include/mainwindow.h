@@ -9,7 +9,7 @@
 #include <QGraphicsPixmapItem>
 #include <QTimer>
 
-#include "camera/include/camera.h"
+#include "camera/API/camera.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
