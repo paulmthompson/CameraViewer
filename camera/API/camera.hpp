@@ -45,7 +45,7 @@ public:
         ve->setSavePath(full_path);
 
         this->ve->createContext(this->w,this->h,25);
-        this->ve->set_pixel_format(ffmpeg_wrapper::GRAY8);
+        this->ve->set_pixel_format(ffmpeg_wrapper::VideoEncoder::INPUT_PIXEL_FORMAT::GRAY8);
     };
     void stopVideoEncoder() {
         this->saveData = false;
