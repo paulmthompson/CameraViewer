@@ -1,5 +1,5 @@
 
-#include "include/basler_camera.h"
+#include "basler_camera.h"
 
 #include <memory>
 #include <iostream>

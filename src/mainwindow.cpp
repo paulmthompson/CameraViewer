@@ -7,7 +7,7 @@
 #include <numeric>
 
 #include "camera/cameras/virtual/virtual_camera.h"
-#include "basler_camera.h"
+#include "camera/cameras/basler/basler_camera.h"
 
 #include <QGraphicsPixmapItem>
 #include <QPainterPath>

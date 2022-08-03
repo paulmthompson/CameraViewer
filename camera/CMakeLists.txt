@@ -14,8 +14,8 @@ set(FFMPEG_WRAPPER_PATH "/home/wanglab/Documents/ffmpeg_wrapper/build/test")
 
 
 add_library(camera SHARED API/camera.hpp
-                        basler_camera.cpp
-                        include/basler_camera.h)
+                        cameras/basler/basler_camera.cpp
+                        cameras/basler/basler_camera.h)
 
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(ffmpeg_wrapper CONFIG REQUIRED PATHS ${FFMPEG_WRAPPER_PATH})
