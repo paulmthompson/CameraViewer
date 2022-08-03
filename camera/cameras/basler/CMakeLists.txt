@@ -6,25 +6,28 @@ project(basler
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-#set(BASLER_PATH "C:\\Program\ Files\\Basler\\pylon\ 6\\Development\\lib\\x64")
-set(BASLER_PATH "/opt/pylon5/lib64")
-
-set(BASLER_INCLUDE_PATH "/opt/pylon5/include")
-#set(BASLER_INCLUDE_PATH "C:\\Program\ Files\\Basler\\pylon\ 6\\Development\\include")
+if (NOT PYLON_VERSION)
+    set(PYLON_VERSION 5)
+endif()
 
 add_library(basler SHARED basler_camera.h
                         basler_camera.cpp
                     ../../API/camera.hpp)
-
-find_library(PYLON_BASE_LIBRARY pylonbase HINTS ${BASLER_PATH})
-find_library(PYLON_GENAPI_LIBRARY GenApi_gcc_v3_1_Basler_pylon HINTS ${BASLER_PATH})
-find_library(PYLON_GCBASE_LIBRARY GCBase_gcc_v3_1_Basler_pylon HINTS ${BASLER_PATH})
-find_library(PYLON_UTILITY_LIBRARY pylonutility HINTS ${BASLER_PATH})
-
-#find_library(PYLON_BASE_LIBRARY PylonBase_v6_1 HINTS ${BASLER_PATH})
-#find_library(PYLON_GENAPI_LIBRARY GenApi_MD_VC141_v3_1_Basler_pylon HINTS ${BASLER_PATH})
-#find_library(PYLON_GCBASE_LIBRARY GCBase_MD_VC141_v3_1_Basler_pylon HINTS ${BASLER_PATH})
-#find_library(PYLON_UTILITY_LIBRARY PylonUtility_v6_1 HINTS ${BASLER_PATH})
+IF (UNIX)
+    if (PYLON_VERSION EQUAL 5)
+        find_library(PYLON_BASE_LIBRARY pylonbase HINTS ${BASLER_PATH})
+        find_library(PYLON_GENAPI_LIBRARY GenApi_gcc_v3_1_Basler_pylon HINTS ${BASLER_PATH})
+        find_library(PYLON_GCBASE_LIBRARY GCBase_gcc_v3_1_Basler_pylon HINTS ${BASLER_PATH})
+        find_library(PYLON_UTILITY_LIBRARY pylonutility HINTS ${BASLER_PATH})
+    endif()
+ELSEIF (WIN32)
+    if (PYLON_VERSION EQUAL 6)
+        find_library(PYLON_BASE_LIBRARY PylonBase_v6_1 HINTS ${BASLER_PATH})
+        find_library(PYLON_GENAPI_LIBRARY GenApi_MD_VC141_v3_1_Basler_pylon HINTS ${BASLER_PATH})
+        find_library(PYLON_GCBASE_LIBRARY GCBase_MD_VC141_v3_1_Basler_pylon HINTS ${BASLER_PATH})
+        find_library(PYLON_UTILITY_LIBRARY PylonUtility_v6_1 HINTS ${BASLER_PATH})
+    endif()
+endif()
 
 target_link_libraries(basler PRIVATE ffmpeg_wrapper::ffmpeg_wrapper)
 
