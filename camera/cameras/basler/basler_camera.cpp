@@ -10,7 +10,7 @@
 
 BaslerCamera::BaslerCamera() {
     Pylon::PylonInitialize();
-    configFileName = "default.pfs";
+    config_file = "default.pfs";
 }
 
 BaslerCamera::~BaslerCamera() {
@@ -69,12 +69,12 @@ bool BaslerCamera::doConnectCamera() {
                 camera.Open(); // Need to access parameters
 
                 //Load values from configuration file
-                if (!configFileName.empty()) {
-                    if (std::filesystem::exists(this->configFileName)) {
-                        Pylon::CFeaturePersistence::Load(configFileName.c_str(), &camera.GetNodeMap(), true);
-                        std::cout << "Configuration file " << this->configFileName << " loaded" << std::endl;
+                if (!config_file.empty()) {
+                    if (std::filesystem::exists(this->config_file)) {
+                        Pylon::CFeaturePersistence::Load(config_file.c_str(), &camera.GetNodeMap(), true);
+                        std::cout << "Configuration file " << this->config_file << " loaded" << std::endl;
                     } else {
-                        std::cout << "Could not find configuration file: " << this->configFileName << std::endl;
+                        std::cout << "Could not find configuration file: " << this->config_file << std::endl;
                     }
                 }
 

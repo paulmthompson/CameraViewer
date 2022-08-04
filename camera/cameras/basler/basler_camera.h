@@ -31,7 +31,6 @@ public:
 
 private:
     Pylon::CBaslerUsbInstantCamera camera;
-    std::string configFileName;
     int doGetData() override;
     bool doConnectCamera() override;
 

@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <filesystem>
 
 #pragma once
 
@@ -31,9 +32,8 @@ public:
         img = std::vector<uint8_t>(w * h);
     };
 
-    void setConfig(std::string path, std::string name) {
-        this->config_file_path = path;
-        this->config_file_name = name;
+    void setConfig(std::filesystem::path path) {
+        this->config_file = path;
     };
     void setSave(std::string path, std::string name) {
         this->save_file_path = path;
@@ -139,8 +139,7 @@ protected:
     std::string save_file_name;
     std::string save_file_path;
 
-    std::string config_file_name;
-    std::string config_file_path;
+    std::filesystem::path config_file;
 
     bool attached; //Specifies if the camera is connected and initialized.
 
