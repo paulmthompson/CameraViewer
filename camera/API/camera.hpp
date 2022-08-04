@@ -15,8 +15,7 @@ public:
         id = 0;
         ve = std::make_unique<ffmpeg_wrapper::VideoEncoder>();
         this->attached = false;
-        this->save_file_path = "./";
-        this->save_file_name = "test.mp4";
+        this->save_file = "./test.mp4";
         totalFramesAcquired = 0;
         totalFramesSaved = 0;
         this->saveData = false;
@@ -35,14 +34,28 @@ public:
     void setConfig(std::filesystem::path path) {
         this->config_file = path;
     };
-    void setSave(std::string path, std::string name) {
-        this->save_file_path = path;
-        this->save_file_name = name;
+    void setSave(std::filesystem::path path) {
+
+        if (path.extension().compare(".mp4") != 0 ) {
+            path.replace_extension(".mp4");
+        }
+
+        // Each camera needs to have a unique save file name
+        // Append camera ID to filename for those greater than 0
+        if (this->id > 0) {
+            std::filesystem::path extension = path.extension();
+            std::filesystem::path filename = path.filename().replace_extension().string();
+
+            path.replace_filename(filename.string() + std::to_string(this->id));
+            path.replace_extension(extension);
+        }
+
+        this->save_file = path;
+        this->initializeVideoEncoder();
     };
 
     void initializeVideoEncoder() {
-        std::string full_path = this->save_file_path + this->save_file_name;
-        ve->setSavePath(full_path);
+        ve->setSavePath(save_file.string());
 
         this->ve->createContext(this->w,this->h,25);
         this->ve->set_pixel_format(ffmpeg_wrapper::VideoEncoder::INPUT_PIXEL_FORMAT::GRAY8);
@@ -136,8 +149,7 @@ protected:
     int w;
     int bit_depth;
 
-    std::string save_file_name;
-    std::string save_file_path;
+    std::filesystem::path save_file;
 
     std::filesystem::path config_file;
 

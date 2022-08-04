@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include <filesystem>
 
 #include <QMainWindow>
 #include <QGraphicsScene>
@@ -65,7 +66,7 @@ private:
 
     bool areCamerasConnected();
 
-    std::string save_file_path;
+    std::filesystem::path save_file_path;
     void changeFileNames();
     void changeFileNames(std::unique_ptr<Camera>& cam);
 

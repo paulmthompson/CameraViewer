@@ -5,6 +5,7 @@
 #include <memory>
 #include <stdlib.h>
 #include <numeric>
+#include <filesystem>
 
 #include "camera/cameras/virtual/virtual_camera.h"
 #include "camera/cameras/basler/basler_camera.h"
@@ -66,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent)
     timer->start(this->loop_time);
 
     save_file_path = QDir::currentPath().toStdString() + "/" + "test.mp4";
-    ui->save_path_label->setText(QString::fromStdString(save_file_path));
+    ui->save_path_label->setText(QString::fromStdString(save_file_path.string()));
 
     ui->tableWidget->setColumnCount(3);
     ui->tableWidget->setColumnWidth(0,20);
@@ -369,26 +370,13 @@ void MainWindow::savePathButton() {
 }
 
 void MainWindow::changeFileNames() {
-
-    std::filesystem::path p = this->save_file_path;
-    std::string dir_path = p.parent_path().string() +"/";
-    auto name_without_suffix = p.filename().replace_extension().string();
-
     for (auto& cam : this->cams) {
-
-        cam->setSave(dir_path, name_without_suffix + std::to_string(cam->getID()) + ".mp4");
-        cam->initializeVideoEncoder();
+        cam->setSave(this->save_file_path);
     }
 }
 
 void MainWindow::changeFileNames(std::unique_ptr<Camera>& cam) {
-
-    std::filesystem::path p = this->save_file_path;
-    std::string dir_path = p.parent_path().string() +"/";
-    auto name_without_suffix = p.filename().replace_extension().string();
-
-    cam->setSave(dir_path, name_without_suffix + std::to_string(cam->getID()) + ".mp4");
-    cam->initializeVideoEncoder();
+    cam->setSave(this->save_file_path);
 }
 
 void MainWindow::scanForCameras() {
