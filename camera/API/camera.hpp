@@ -8,6 +8,15 @@
 
 #pragma once
 
+struct ImageProperties {
+    ImageProperties() : height(0),width(0),bit_depth(0) {}
+    ImageProperties(int h, int w, int bd) :
+        height(h), width(w), bit_depth(bd) {}
+    int height;
+    int width;
+    int bit_depth;
+};
+
 class Camera {
 public:
 
@@ -24,11 +33,10 @@ public:
 
         exposure_time = 0.005f;
         gain = 100.0f;
-        w = 640;
-        h = 480;
-        bit_depth = 8;
 
-        img = std::vector<uint8_t>(w * h);
+        img_prop = ImageProperties(480,640,8);
+
+        img = std::vector<uint8_t>(480 * 640);
     };
 
     void setConfig(std::filesystem::path path) {
@@ -57,7 +65,7 @@ public:
     void initializeVideoEncoder() {
         ve->setSavePath(save_file.string());
 
-        this->ve->createContext(this->w,this->h,25);
+        this->ve->createContext(this->img_prop.width,this->img_prop.height,25);
         this->ve->set_pixel_format(ffmpeg_wrapper::VideoEncoder::INPUT_PIXEL_FORMAT::GRAY8);
     };
     void stopVideoEncoder() {
@@ -84,9 +92,9 @@ public:
     };
 
     void changeSize(int width, int height) {
-        this->w = width;
-        this->h = height;
-        this->img.resize(this->w * this->h);
+        img_prop.width = width;
+        img_prop.height = height;
+        this->img.resize(width * height);
     };
     void changeExposureTime(float exposure) {
         this->exposure_time = exposure;
@@ -126,11 +134,14 @@ public:
         return framesCollected;
     };
 
+    void get_image(std::vector<uint8_t>& input_data) {
+        input_data = this->img;
+    }
+
     void assignID(int id) {this->id = id;}
     void assignSerial(std::string serial) {this->serial_num = serial;}
 
-    int getHeight() const {return h;}
-    int getWidth() const {return w;}
+    ImageProperties getImageProp() const {return img_prop;}
     std::string getSerial() const {return serial_num;}
     std::string getModel() const {return model;}
     bool getAttached() const {return attached;}
@@ -145,13 +156,11 @@ protected:
     std::string serial_num;
     std::string model;
 
-    int h;
-    int w;
-    int bit_depth;
-
     std::filesystem::path save_file;
 
     std::filesystem::path config_file;
+
+    ImageProperties img_prop;
 
     bool attached; //Specifies if the camera is connected and initialized.
 

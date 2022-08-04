@@ -11,6 +11,7 @@
 #include <QTimer>
 
 #include "camera/API/camera.hpp"
+#include "camera/CameraManager/cameramanager.hpp"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -36,7 +37,7 @@ private:
     QGraphicsScene* camera_view_scene;
     QGraphicsPixmapItem* camera_view_pixmap;
 
-    std::vector<std::unique_ptr<Camera>> cams;
+    std::unique_ptr<CameraManager> camManager;
 
     void updateCameraTable();
     void updateModelandSerial(int cam_num);
@@ -48,8 +49,6 @@ private:
 
     // In recordMode, cameras will save frames that they acquire
     bool recordMode;
-    int record_countdown;
-
 
     bool viewActive;
     bool softwareTrigger;
@@ -64,11 +63,7 @@ private:
     int loop_time;
     int elapsed_times_i;
 
-    bool areCamerasConnected();
-
     std::filesystem::path save_file_path;
-    void changeFileNames();
-    void changeFileNames(std::unique_ptr<Camera>& cam);
 
 private slots:
     void addVirtualCamera();

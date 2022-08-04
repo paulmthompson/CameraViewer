@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.21)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_library(camera SHARED API/camera.hpp Loader/loader.hpp)
+add_library(camera SHARED API/camera.hpp CameraManager/cameramanager.hpp)
 
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(ffmpeg_wrapper CONFIG REQUIRED)

@@ -9,8 +9,6 @@ VirtualCamera::VirtualCamera() {
     serial_num = "xxx-xxx-" + std::to_string(std::rand() % 999);
     model = "Virtual";
 
-    h = 480;
-    w = 640;
     fps = 500;
     random_index = 0;
 
@@ -24,7 +22,7 @@ VirtualCamera::VirtualCamera() {
                        return distribution_0_255(random_engine);
                    };
     for (int i = 0; i< random_nums.size(); i ++) {
-        random_nums[i] = std::vector<uint8_t>(h*w);
+        random_nums[i] = std::vector<uint8_t>(img_prop.height*img_prop.width);
         std::generate(begin(random_nums[i]),end(random_nums[i]),gen);
     }
 }
@@ -44,7 +42,7 @@ int VirtualCamera::doGetData() {
 
     for (int j = 0; j < this->fps / 25; j++) {
 
-        memcpy(&this->img.data()[0],&random_nums[this->random_index++].data()[0],this->h*this->w);
+        memcpy(&this->img.data()[0],&random_nums[this->random_index++].data()[0],img_prop.height*img_prop.width);
 
         if (this->saveData) {
             ve->writeFrameGray8(this->img);

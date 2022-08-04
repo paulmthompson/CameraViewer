@@ -80,12 +80,12 @@ bool BaslerCamera::doConnectCamera() {
 
                 //Here we should update all of the parameters for the camera
                 this->gain = camera.Gain.GetValue();
-                this->w = camera.Width.GetValue();
-                this->h = camera.Height.GetValue();
+                this->img_prop.width = camera.Width.GetValue();
+                this->img_prop.height = camera.Height.GetValue();
                 this->exposure_time = camera.ExposureTime.GetValue();
                 std::string pix_fmt = camera.PixelFormat.ToString().c_str();
                 if (pix_fmt == "Mono8") {
-                    this->bit_depth = 1;
+                    this->img_prop.bit_depth = 1;
                 }
 
                 set_trigger(Basler_UsbCameraParams::TriggerSource_Line3);
@@ -129,7 +129,7 @@ int BaslerCamera::doGetData() {
 
     while (camera.RetrieveResult(0, ptrGrabResult, Pylon::TimeoutHandling_Return)) {
 
-        memcpy(&this->img.data()[0],ptrGrabResult->GetBuffer(),this->h*this->w);
+        memcpy(&this->img.data()[0],ptrGrabResult->GetBuffer(),this->img_prop.height*this->img_prop.width);
 
         if (this->saveData) {
             ve->writeFrameGray8(this->img);

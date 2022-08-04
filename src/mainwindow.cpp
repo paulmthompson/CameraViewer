@@ -7,9 +7,6 @@
 #include <numeric>
 #include <filesystem>
 
-#include "camera/cameras/virtual/virtual_camera.h"
-#include "camera/cameras/basler/basler_camera.h"
-
 #include <QGraphicsPixmapItem>
 #include <QPainterPath>
 #include <QPainter>
@@ -46,12 +43,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->graphicsView->setScene(camera_view_scene);
     ui->graphicsView->show();
 
-    cams = std::vector<std::unique_ptr<Camera>>(0);
+    camManager = std::make_unique<CameraManager>();
+    //cams = std::vector<std::unique_ptr<Camera>>(0);
 
     timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &MainWindow::acquisitionLoop);
     recordMode = false;
-    record_countdown = 0;
 
     viewActive = true;
     softwareTrigger = false;
@@ -117,55 +114,35 @@ void MainWindow::connectCamera() {
     if (select->hasSelection()) {
         int cam_num =  select->selectedRows()[0].data().toInt();
 
-        if (!cams[cam_num]->getAttached()) {
-
+        if (camManager->connectCamera(cam_num)) {
             drawConnected(green);
-            changeFileNames(cams[cam_num]);
+            ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("Yes")));
 
-            if (cams[cam_num]->connectCamera()) { 
-                ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("Yes")));
-
-                cams[cam_num]->startAcquisition();
-
-                //Our display frame needs to be able to receive the biggest frame possible.
-                if (cams[cam_num]->getWidth() * cams[cam_num]->getHeight() > this->img_to_display.size()) {
-                    this->img_to_display.resize(cams[cam_num]->getWidth() * cams[cam_num]->getHeight());
-                }
-
-            } else {
-                ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("No")));
+            //Our display frame needs to be able to receive the biggest frame possible.
+            if (camManager->getCanvasSize(cam_num) > this->img_to_display.size()) {
+                this->img_to_display.resize(camManager->getCanvasSize(cam_num));
             }
+        } else {
+            ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("No")));
         }
     }
 }
 
 void MainWindow::updateModelandSerial(int cam_num) {
-    std::string mymodel = this->cams[cam_num].get()->getModel();
-    std::string myserial = this->cams[cam_num].get()->getSerial();
 
-    ui->CameraModel->setText(QString::fromStdString(mymodel));
-    ui->CameraSerial->setText(QString::fromStdString(myserial));
-}
-
-void MainWindow::addVirtualCamera() {
-
-    VirtualCamera v;
-    cams.push_back(std::unique_ptr<Camera>(v.copy_class()));
-
-    cams[cams.size()-1]->assignID(cams.size()-1);
-
-    updateCameraTable();
+    ui->CameraModel->setText(QString::fromStdString(this->camManager->getModel(cam_num)));
+    ui->CameraSerial->setText(QString::fromStdString(this->camManager->getSerial(cam_num)));
 }
 
 void MainWindow::updateCameraTable() {
 
     ui->tableWidget->setRowCount(0);
     int current_row = 0;
-    for (auto& cam : this->cams) {
+    for (int i = 0; i < camManager->numberOfCameras(); i++) {
         ui->tableWidget->insertRow(ui->tableWidget->rowCount());
         ui->tableWidget->setItem(current_row,0,new QTableWidgetItem(QString::number(current_row)));
-        ui->tableWidget->setItem(current_row,1,new QTableWidgetItem(QString::fromStdString(cam->getSerial())));
-        if (cam->getAttached()) {
+        ui->tableWidget->setItem(current_row,1,new QTableWidgetItem(QString::fromStdString(camManager->getSerial(current_row))));
+        if (camManager->getAttached(current_row)) {
             ui->tableWidget->setItem(current_row,2,new QTableWidgetItem(QString::fromStdString("Yes")));
         } else {
             ui->tableWidget->setItem(current_row,2,new QTableWidgetItem(QString::fromStdString("No")));
@@ -194,19 +171,17 @@ void MainWindow::recordButton() {
 
     if (this->recordMode) {
         this->recordMode = false;
-        this->record_countdown = 5; //Number of acquisition loops before turning off saving and closing mp4 file. This helps if there are some lingering frames to acquire
+        camManager->setRecordCountdown();//Number of acquisition loops before turning off saving and closing mp4 file. This helps if there are some lingering frames to acquire
         if (this->softwareTrigger) {
             turnOffTrigger();
         }
         ui->view_record_label->setText(QString::fromStdString("View Mode"));
         ui->graphicsView->setStyleSheet("#graphicsView{border: 5px solid black}");
     } else {
+
         this->recordMode = true;
-        for (auto& cam : this->cams) {
-            if (cam->getAttached()) {
-                cam->setRecord(true);
-            }
-        }
+        this->camManager->setRecord(true);
+
         ui->view_record_label->setText(QString::fromStdString("Record Mode"));
         ui->graphicsView->setStyleSheet("#graphicsView{border: 5px solid red}");
     }
@@ -216,7 +191,7 @@ void MainWindow::recordButton() {
 // This is the software trigger method
 void MainWindow::triggerCamButton() {
 
-    if (this->areCamerasConnected()) {
+    if (this->camManager->areCamerasConnected()) {
 
         if (this->softwareTrigger) {
             turnOffTrigger();
@@ -232,44 +207,22 @@ void MainWindow::turnOnTrigger() {
     //Send software trigger signal to camera
    ui->start_cam_button->setText(QString("Stop Camera"));
    this->softwareTrigger = true;
-   for (auto& cam : this->cams) {
-       if (cam->getAttached() && cam->getAquisitionState()) {
-           cam->startTrigger();
-       }
-   }
+   this->camManager->startTrigger();
 }
 
 void MainWindow::turnOffTrigger() {
     //If they are running, we should stop them, but if we are in record mode, we should make sure to also stop the recording in such a way as to not lose frames
     ui->start_cam_button->setText(QString("Trigger Camera"));
     this->softwareTrigger = false;
-    for (auto& cam : this->cams) {
-        if (cam->getAttached() && cam->getAquisitionState()) {
-            cam->stopTrigger();
-        }
-    }
+    this->camManager->stopTrigger();
 }
 
 void MainWindow::acquisitionLoop() {
 
-    if (this->areCamerasConnected()) {
-
         QElapsedTimer timer2;
         timer2.start();
 
-        int num_frames_acquired = 0;
-
-        //Cameras in the "active" state will return frames if they have them.
-        for (auto& cam : this->cams) {
-            if (cam->getAttached() && cam->getAquisitionState()) {
-                if (cam->getID() == this->cam_to_display) {
-                    num_frames_acquired += cam->get_data(this->img_to_display);
-                } else {
-                    num_frames_acquired += cam->get_data();
-                }
-
-            }
-        }
+        int num_frames_acquired = camManager->acquisitionLoop();
 
         elapsed_times[elapsed_times_i++] = timer2.elapsed();
 
@@ -282,47 +235,30 @@ void MainWindow::acquisitionLoop() {
                 //ui->graphicsView->setStyleSheet("#graphicsView{border: 5px solid black}");
             }
         }
-
-        ui->frame_count_save_label->setText(QString::fromStdString(std::to_string(cams[this->cam_to_display]->getTotalFramesSaved())));
-        ui->frame_count_label->setText(QString::fromStdString(std::to_string(cams[this->cam_to_display]->getTotalFrames())));
-
+        if (num_frames_acquired > 0 ) {
+            camManager->getImage(this->img_to_display,this->cam_to_display);
+            ui->frame_count_save_label->setText(
+                        QString::fromStdString(std::to_string(camManager->getTotalFramesSaved(this->cam_to_display))));
+            ui->frame_count_label->setText(
+                        QString::fromStdString(std::to_string(camManager->getTotalFrames(this->cam_to_display))));
+        }
 
         // Display
         if (this->viewActive) {
             if (num_frames_acquired > 0) {
-                QImage img = QImage(&this->img_to_display[0],this->cams[this->cam_to_display]->getWidth(), this->cams[this->cam_to_display]->getHeight(), QImage::Format_Grayscale8);
+
+                QImage img = QImage(&this->img_to_display[0],
+                        camManager->getCanvasWidth(this->cam_to_display),
+                        camManager->getCanvasHeight(this->cam_to_display),
+                        QImage::Format_Grayscale8);
                 updateCanvas(img);
             }
         }
-
-        // If the cameras are no longer triggered and we were saving, or we were told to stop saving (but still have a trigger), we should close the file
-        if (record_countdown > 0) {
-            if (record_countdown == 1) {
-                for (auto& cam : this->cams) {
-                    if (cam->getAttached()) {
-                        cam->setRecord(false);
-                    }
-                }
-            }
-            record_countdown--;
-        }
-
-    }
 }
 
 void MainWindow::updateCanvas(QImage& img)
 {
     camera_view_pixmap->setPixmap(QPixmap::fromImage(img).scaled(ui->graphicsView->width(),ui->graphicsView->height()));
-}
-
-bool MainWindow::areCamerasConnected() {
-
-    bool output = false;
-    for (auto& cam : this->cams) {
-        output |= cam->getAttached();
-    }
-
-    return output;
 }
 
 void MainWindow::selectCameraInTable(int row, int column) {
@@ -331,7 +267,7 @@ void MainWindow::selectCameraInTable(int row, int column) {
 
     this->cam_to_display = row;
 
-    if (cams[row]->getAttached()) {
+    if (this->camManager->getAttached(row)) {
          drawConnected(green);
     } else {
         drawConnected(red);
@@ -360,7 +296,7 @@ void MainWindow::savePathButton() {
 
             this->save_file_path = vid_name.toStdString();
 
-            changeFileNames();
+            camManager->changeFileNames(this->save_file_path);
 
             ui->save_path_label->setText(vid_name);
         }
@@ -369,29 +305,18 @@ void MainWindow::savePathButton() {
     }
 }
 
-void MainWindow::changeFileNames() {
-    for (auto& cam : this->cams) {
-        cam->setSave(this->save_file_path);
-    }
-}
-
-void MainWindow::changeFileNames(std::unique_ptr<Camera>& cam) {
-    cam->setSave(this->save_file_path);
-}
-
 void MainWindow::scanForCameras() {
 
-    auto b = BaslerCamera();
+    camManager->scanForCameras();
 
-    auto connected_camera_strings = b.scan();
+    updateCameraTable();
 
-    for (auto& serial_num : connected_camera_strings) { //This should return a pair of the model name and serial number I think so that both can be put in the table
-        cams.push_back(std::unique_ptr<Camera>(b.copy_class()));
-        cams[cams.size()-1]->assignID(cams.size()-1);
-        cams[cams.size()-1]->assignSerial(serial_num);
-        updateCameraTable();
-    }
 }
 
+void MainWindow::addVirtualCamera() {
 
+    camManager->addVirtualCamera();
+
+    updateCameraTable();
+}
 
