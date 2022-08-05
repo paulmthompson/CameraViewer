@@ -1,0 +1,10 @@
+{
+    "cameras": [
+        {
+            "name": "camera 1",
+            "type": "Basler",
+            "serial-number": "22636053",
+            "config-filepath": "./config.pfs"
+        }
+    ]
+}
