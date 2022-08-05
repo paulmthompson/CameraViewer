@@ -10,6 +10,9 @@
 #include <vector>
 #include <memory>
 #include <chrono>
+#include <iostream>
+#include <filesystem>
+#include <fstream>
 
 using json = nlohmann::json;
 
@@ -159,6 +162,46 @@ public:
             cams[cams.size()-1]->assignID(cams.size()-1);
             cams[cams.size()-1]->assignSerial(serial_num);
         }
+    }
+    void loadConfigurationFile(std::filesystem::path& config_path) {
+
+        std::ifstream f(config_path.string());
+        json data = json::parse(f);
+        f.close();
+
+        for (const auto& entry :data["cameras"]) {
+            std::cout << "Loading first camera named " << entry["name"] << std::endl;
+            std::string camera_type = entry["type"];
+            if (camera_type.compare("virtual") == 0) {
+                std::cout << "Loading virtual camera" << std::endl;
+
+                this->addVirtualCamera();
+
+            } else if (camera_type.compare("basler") == 0) {
+                std::cout << "loading basler camera" << std::endl;
+
+                if (cams.size() == 0) {
+                    this->scanForCameras();
+                }
+
+                for (auto& cam : cams) {
+                   std::string serial_num = cam->getSerial();
+                   if (serial_num.compare(entry["serial-number"]) == 0) {
+                       std::cout << "found matched serial number " << std::endl;
+                       if (this->connectCamera(cam->getID())) {
+                           std::cout << "Camera connected" << std::endl;
+                       }
+
+                       cam->setConfig(entry["config-filepath"]);
+                       break;
+                   }
+                }
+
+            } else {
+                std::cout << "Unknown camera type " << camera_type << std::endl;
+            }
+        }
+
     }
 private:
     std::vector<std::unique_ptr<Camera>> cams;

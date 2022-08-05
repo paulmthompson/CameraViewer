@@ -329,4 +329,6 @@ void MainWindow::loadConfiguration() {
     std::cout << fileName.toStdString() << std::endl;
 
     this->config_path = fileName.toStdString();
+
+    camManager->loadConfigurationFile(config_path);
 }

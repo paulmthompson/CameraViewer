@@ -2,7 +2,7 @@
     "cameras": [
         {
             "name": "camera 1",
-            "type": "Basler",
+            "type": "basler",
             "serial-number": "22636053",
             "config-filepath": "./config.pfs"
         }
