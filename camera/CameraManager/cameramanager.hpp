@@ -1,6 +1,4 @@
 
-//#include <ffmpeg_wrapper/videoencoder.h>
-
 #include <nlohmann/json.hpp>
 
 #include "../API/camera.hpp"
@@ -17,7 +15,13 @@ using json = nlohmann::json;
 
 #pragma once
 
-class CameraManager {
+#if defined _WIN32 || defined __CYGWIN__
+    #define DLLOPT __declspec(dllexport)
+#else
+    #define DLLOPT __attribute__((visibility("default")))
+#endif
+
+class DLLOPT CameraManager {
 public:
     CameraManager()
     {
@@ -25,6 +29,10 @@ public:
         save_file_path = "./test.mp4";
         record_countdown = 0;
     }
+
+    CameraManager(const CameraManager&) =delete;
+    CameraManager& operator=(const CameraManager&) =delete;
+
     bool getAttached(int cam_num) {return cams[cam_num]->getAttached();}
     bool connectCamera(int cam_num) {
 

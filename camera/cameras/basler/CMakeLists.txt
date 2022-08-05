@@ -22,16 +22,16 @@ IF (UNIX)
     endif()
 ELSEIF (WIN32)
     if (PYLON_VERSION EQUAL 6)
-        find_library(PYLON_BASE_LIBRARY PylonBase_v6_1 HINTS ${BASLER_PATH})
-        find_library(PYLON_GENAPI_LIBRARY GenApi_MD_VC141_v3_1_Basler_pylon HINTS ${BASLER_PATH})
-        find_library(PYLON_GCBASE_LIBRARY GCBase_MD_VC141_v3_1_Basler_pylon HINTS ${BASLER_PATH})
-        find_library(PYLON_UTILITY_LIBRARY PylonUtility_v6_1 HINTS ${BASLER_PATH})
+        find_library(PYLON_BASE_LIBRARY PylonBase_v6_1 HINTS ${BASLER_PATH} REQUIRED)
+        find_library(PYLON_GENAPI_LIBRARY GenApi_MD_VC141_v3_1_Basler_pylon HINTS ${BASLER_PATH} REQUIRED)
+        find_library(PYLON_GCBASE_LIBRARY GCBase_MD_VC141_v3_1_Basler_pylon HINTS ${BASLER_PATH} REQUIRED)
+        find_library(PYLON_UTILITY_LIBRARY PylonUtility_v6_1 HINTS ${BASLER_PATH} REQUIRED)
     endif()
 endif()
 
 target_link_libraries(basler PRIVATE ffmpeg_wrapper::ffmpeg_wrapper)
 
-target_link_libraries(basler PRIVATE
+target_link_libraries(basler PUBLIC
      ${PYLON_BASE_LIBRARY}
      ${PYLON_GENAPI_LIBRARY}
      ${PYLON_GCBASE_LIBRARY}

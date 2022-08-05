@@ -8,6 +8,12 @@
 
 #pragma once
 
+#if defined _WIN32 || defined __CYGWIN__
+    #define DLLOPT __declspec(dllexport)
+#else
+    #define DLLOPT __attribute__((visibility("default")))
+#endif
+
 struct ImageProperties {
     ImageProperties() : height(0),width(0),bit_depth(0) {}
     ImageProperties(int h, int w, int bd) :
@@ -17,7 +23,7 @@ struct ImageProperties {
     int bit_depth;
 };
 
-class Camera {
+class DLLOPT Camera {
 public:
 
     Camera() {
@@ -38,6 +44,9 @@ public:
 
         img = std::vector<uint8_t>(480 * 640);
     };
+
+    Camera(const Camera&) =delete;
+    Camera& operator=(const Camera&) =delete;
 
     void setConfig(std::filesystem::path path) {
         this->config_file = path;

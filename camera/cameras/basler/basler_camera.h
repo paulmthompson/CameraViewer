@@ -1,7 +1,6 @@
 #ifndef BASLER_CAMERA_H
 #define BASLER_CAMERA_H
 
-
 #include "../API/camera.hpp"
 
 #include <memory>
@@ -11,7 +10,13 @@
 #include <pylon/PylonIncludes.h>
 #include <pylon/usb/BaslerUsbInstantCamera.h>
 
-class BaslerCamera : public Camera {
+#if defined _WIN32 || defined __CYGWIN__
+    #define DLLOPT __declspec(dllexport)
+#else
+    #define DLLOPT __attribute__((visibility("default")))
+#endif
+
+class DLLOPT BaslerCamera : public Camera {
 public:
     BaslerCamera();
     ~BaslerCamera();

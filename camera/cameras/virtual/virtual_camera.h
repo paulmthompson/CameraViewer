@@ -6,8 +6,13 @@
 #include <memory>
 #include <random>
 
+#if defined _WIN32 || defined __CYGWIN__
+    #define DLLOPT __declspec(dllexport)
+#else
+    #define DLLOPT __attribute__((visibility("default")))
+#endif
 
-class VirtualCamera : public Camera {
+class DLLOPT VirtualCamera : public Camera {
 public:
     VirtualCamera();
 

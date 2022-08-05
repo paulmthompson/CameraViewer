@@ -71,7 +71,7 @@ bool BaslerCamera::doConnectCamera() {
                 //Load values from configuration file
                 if (!config_file.empty()) {
                     if (std::filesystem::exists(this->config_file)) {
-                        Pylon::CFeaturePersistence::Load(config_file.c_str(), &camera.GetNodeMap(), true);
+                        Pylon::CFeaturePersistence::Load(config_file.string().c_str(), &camera.GetNodeMap(), true);
                         std::cout << "Configuration file " << this->config_file << " loaded" << std::endl;
                     } else {
                         std::cout << "Could not find configuration file: " << this->config_file << std::endl;
