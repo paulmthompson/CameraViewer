@@ -15,3 +15,7 @@ It also uses my library to wrap ffmpeg (https://github.com/paulmthompson/ffmpeg_
 
 #### Linux
 
+The ffmpeg installation needs to be dynamic libraries instead of static, but if you are installing with vcpkg, it will install static by default. You must make a custom triplet to specify the dynamic installtion. Read about this here: 
+  
+https://vcpkg.readthedocs.io/en/latest/examples/overlay-triplets-linux-dynamic/
+
