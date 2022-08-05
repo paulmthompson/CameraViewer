@@ -64,6 +64,7 @@ private:
     int elapsed_times_i;
 
     std::filesystem::path save_file_path;
+    std::filesystem::path config_path;
 
 private slots:
     void addVirtualCamera();
@@ -74,6 +75,7 @@ private slots:
     void triggerCamButton();
     void savePathButton();
     void scanForCameras();
+    void loadConfiguration();
 
 };
 

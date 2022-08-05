@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <numeric>
 #include <filesystem>
+#include <ostream>
 
 #include <QGraphicsPixmapItem>
 #include <QPainterPath>
@@ -86,6 +87,7 @@ void MainWindow::addCallbacks() {
     connect(ui->view_button,SIGNAL(clicked()),this,SLOT(viewButton()));
     connect(ui->change_save_button,SIGNAL(clicked()),this,SLOT(savePathButton()));
     connect(ui->rescan_button,SIGNAL(clicked()),this,SLOT(scanForCameras()));
+    connect(ui->actionLoad_Configuration,SIGNAL(triggered()),this,SLOT(loadConfiguration()));
 }
 
 void MainWindow::drawConnected(Connected_Button_Color color) {
@@ -320,3 +322,11 @@ void MainWindow::addVirtualCamera() {
     updateCameraTable();
 }
 
+void MainWindow::loadConfiguration() {
+    auto fileName = QFileDialog::getOpenFileName(this,
+        tr("Open Configuration File"), QDir::currentPath(), tr("JSON Files (*.json)"));
+
+    std::cout << fileName.toStdString() << std::endl;
+
+    this->config_path = fileName.toStdString();
+}
