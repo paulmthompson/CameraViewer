@@ -90,6 +90,9 @@ bool BaslerCamera::doConnectCamera() {
 
                 set_trigger(Basler_UsbCameraParams::TriggerSource_Line3);
 
+                this->attached = true;
+                return true;
+
             } else {
                 std::cout << "Camera was not able to be initialized. Is one connected?" << std::endl;
                 return false;
@@ -100,8 +103,7 @@ bool BaslerCamera::doConnectCamera() {
         }
     }
 
-    this->attached = true;
-    return true;
+    return false;
 }
 
 void BaslerCamera::set_trigger(Basler_UsbCameraParams::TriggerSourceEnums trigger_line) {

@@ -331,4 +331,6 @@ void MainWindow::loadConfiguration() {
     this->config_path = fileName.toStdString();
 
     camManager->loadConfigurationFile(config_path);
+
+    updateCameraTable();
 }

@@ -188,11 +188,12 @@ public:
                    std::string serial_num = cam->getSerial();
                    if (serial_num.compare(entry["serial-number"]) == 0) {
                        std::cout << "found matched serial number " << std::endl;
+
+                       cam->setConfig(entry["config-filepath"]);
+
                        if (this->connectCamera(cam->getID())) {
                            std::cout << "Camera connected" << std::endl;
                        }
-
-                       cam->setConfig(entry["config-filepath"]);
                        break;
                    }
                 }
