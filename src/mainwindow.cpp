@@ -209,14 +209,14 @@ void MainWindow::turnOnTrigger() {
     //Send software trigger signal to camera
    ui->start_cam_button->setText(QString("Stop Camera"));
    this->softwareTrigger = true;
-   this->camManager->startTrigger();
+   this->camManager->trigger(true);
 }
 
 void MainWindow::turnOffTrigger() {
     //If they are running, we should stop them, but if we are in record mode, we should make sure to also stop the recording in such a way as to not lose frames
     ui->start_cam_button->setText(QString("Trigger Camera"));
     this->softwareTrigger = false;
-    this->camManager->stopTrigger();
+    this->camManager->trigger(false);
 }
 
 void MainWindow::acquisitionLoop() {

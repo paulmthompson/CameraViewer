@@ -78,18 +78,14 @@ public:
             this->record_countdown = 5;
         }
     }
-    void startTrigger() {
+    void trigger(bool trigger) {
         for (auto& cam : this->cams) {
             if (cam->getAttached() && cam->getAquisitionState()) {
-                cam->startTrigger();
-            }
-        }
-    }
-
-    void stopTrigger() {
-        for (auto& cam : this->cams) {
-            if (cam->getAttached() && cam->getAquisitionState()) {
-                cam->stopTrigger();
+                if (trigger) {
+                    cam->startTrigger();
+                } else {
+                    cam->stopTrigger();
+                }
             }
         }
     }
