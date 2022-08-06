@@ -30,7 +30,9 @@ public:
     {
         cams = std::vector<std::unique_ptr<Camera>>();
         save_file_path = "./test.mp4";
+
         record_countdown = 0;
+        record_countdown_state = false;
     }
 
     CameraManager(const CameraManager&) =delete;
@@ -59,10 +61,21 @@ public:
     std::string getSerial(int cam_num) {return cams[cam_num].get()->getSerial();}
 
     void setRecord(bool recordState) {
-        for (auto& cam : this->cams) {
-            if (cam->getAttached()) {
-                cam->setRecord(recordState);
+        //If we are starting to record, we should change recording state to true
+
+        //Alternatively, if we are setting recordings to be off
+        //we should check if we are in the record_countdown_state which
+        //is when our acquisition loop will run for several extra iterations
+        //to make sure that we don't miss any frames
+        if (record_countdown_state == true || recordState) {
+            for (auto& cam : this->cams) {
+                if (cam->getAttached()) {
+                    cam->setRecord(recordState);
+                }
             }
+        } else {
+            this->record_countdown_state = true;
+            this->record_countdown = 5;
         }
     }
     void startTrigger() {
@@ -128,9 +141,10 @@ public:
                 }
              }
              // If the cameras are no longer triggered and we were saving, or we were told to stop saving (but still have a trigger), we should close the file
-             if (record_countdown > 0) {
+             if (record_countdown_state) {
                 if (record_countdown == 1) {
                     this->setRecord(false);
+                    this->record_countdown_state = false;
                  }
                 record_countdown--;
              }
@@ -139,7 +153,6 @@ public:
     }
     int getTotalFramesSaved(int cam_num) {return cams[cam_num]->getTotalFramesSaved();}
     int getTotalFrames(int cam_num) {return cams[cam_num]->getTotalFrames();}
-    void setRecordCountdown() {this->record_countdown = 5;}
 
     void getImage(std::vector<uint8_t>& img,int cam_num) {
         cams[cam_num]->get_image(img);
@@ -208,4 +221,5 @@ private:
     std::vector<std::unique_ptr<Camera>> cams;
     std::filesystem::path save_file_path;
     int record_countdown;
+    bool record_countdown_state;
 };

@@ -173,7 +173,7 @@ void MainWindow::recordButton() {
 
     if (this->recordMode) {
         this->recordMode = false;
-        camManager->setRecordCountdown();//Number of acquisition loops before turning off saving and closing mp4 file. This helps if there are some lingering frames to acquire
+        camManager->setRecord(false);//Number of acquisition loops before turning off saving and closing mp4 file. This helps if there are some lingering frames to acquire
         if (this->softwareTrigger) {
             turnOffTrigger();
         }
