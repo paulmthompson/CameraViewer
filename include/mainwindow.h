@@ -66,6 +66,8 @@ private:
     std::filesystem::path save_file_path;
     std::filesystem::path config_path;
 
+    void updateSaveName(std::filesystem::path path);
+
 private slots:
     void addVirtualCamera();
     void connectCamera();

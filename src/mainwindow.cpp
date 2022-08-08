@@ -64,8 +64,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     timer->start(this->loop_time);
 
-    save_file_path = QDir::currentPath().toStdString() + "/" + "test.mp4";
-    ui->save_path_label->setText(QString::fromStdString(save_file_path.string()));
+    updateSaveName(QDir::currentPath().toStdString() + "/" + "test.mp4");
 
     ui->tableWidget->setColumnCount(3);
     ui->tableWidget->setColumnWidth(0,20);
@@ -295,16 +294,20 @@ void MainWindow::savePathButton() {
            //                 QDir::currentPath(),
             //                "MP4 (*.mp4)");
         if (!vid_name.isEmpty()) {
-
-            this->save_file_path = vid_name.toStdString();
-
-            camManager->changeFileNames(this->save_file_path);
-
-            ui->save_path_label->setText(vid_name);
+            updateSaveName(vid_name.toStdString());
         }
     } else {
         std::cout << "Can't change filename while you are already saving!" << std::endl;
     }
+}
+
+void MainWindow::updateSaveName(std::filesystem::path path) {
+
+    this->save_file_path = path;
+
+    camManager->changeFileNames(this->save_file_path);
+    ui->save_name_label->setText(QString::fromStdString(this->save_file_path.filename().string()));
+    ui->save_folder_label->setText(QString::fromStdString(this->save_file_path.parent_path().string()));
 }
 
 void MainWindow::scanForCameras() {

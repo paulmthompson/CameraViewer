@@ -33,7 +33,9 @@ public:
 
         record_countdown = 0;
         record_countdown_state = false;
+        std::vector<uint8_t> data{0};
     }
+    std::vector<uint8_t> data;
 
     CameraManager(const CameraManager&) =delete;
     CameraManager& operator=(const CameraManager&) =delete;
@@ -152,6 +154,9 @@ public:
 
     void getImage(std::vector<uint8_t>& img,int cam_num) {
         cams[cam_num]->get_image(img);
+    }
+    void getImage(int cam_num) {
+        cams[cam_num]->get_image(this->data);
     }
 
     void addVirtualCamera() {
