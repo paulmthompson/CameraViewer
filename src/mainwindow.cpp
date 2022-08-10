@@ -331,9 +331,11 @@ void MainWindow::loadConfiguration() {
 
     std::cout << fileName.toStdString() << std::endl;
 
-    this->config_path = fileName.toStdString();
+    if (!fileName.isEmpty()) {
+        this->config_path = fileName.toStdString();
 
-    camManager->loadConfigurationFile(config_path);
+        camManager->loadConfigurationFile(config_path);
 
-    updateCameraTable();
+        updateCameraTable();
+    }
 }
