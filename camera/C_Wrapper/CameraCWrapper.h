@@ -27,6 +27,8 @@ DLLOPT int CameraManager_AcquisitionLoop(CameraManager* cam);
 
 DLLOPT void CameraManager_GetImage(CameraManager* cam, uint8_t* data, int cam_num);
 
+DLLOPT int CameraManager_GetActiveCameras(CameraManager* cam, int* active_cams);
+
 #ifdef __cplusplus
 }
 #endif

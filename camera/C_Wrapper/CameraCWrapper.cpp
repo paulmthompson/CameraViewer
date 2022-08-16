@@ -31,6 +31,10 @@ extern "C" {
         cam->getImage(cam_num);
         data = cam->data.data();
     }
+    int CameraManager_GetActiveCameras(CameraManager* cam, int* active_cams) {
+        active_cams = cam->getAcquireCams().data();
+        return cam->getAcquireCams().size();
+    }
 
 
 

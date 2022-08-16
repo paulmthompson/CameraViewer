@@ -47,6 +47,7 @@ public:
             cams[cam_num]->setSave(this->save_file_path);
             if (cams[cam_num]->connectCamera()) {
                 startAcquisition(cam_num);
+                this->acquire_cams.push_back(cam_num);
                 return true;
              } else {
                 std::cout << "The requested camera could not be connected" << std::endl;
@@ -81,7 +82,7 @@ public:
         }
     }
     void trigger(bool trigger) {
-        for (auto& cam : this->cams) {
+        for (auto& cam : this->cams) { // This should only trigger attached cameras
             if (cam->getAttached() && cam->getAquisitionState()) {
                 if (trigger) {
                     cam->startTrigger();
@@ -218,8 +219,10 @@ public:
         }
 
     }
+    std::vector<int> getAcquireCams() {return this->acquire_cams;}
 private:
-    std::vector<std::unique_ptr<Camera>> cams;
+    std::vector<std::unique_ptr<Camera>> cams; // These are all of the cameras that are connected to the computer and detected
+    std::vector<int> acquire_cams; // This array lists the indexes of cameras where we actually want to collect data from above
     std::filesystem::path save_file_path;
     int record_countdown;
     bool record_countdown_state;
