@@ -9,7 +9,11 @@ I compile this using QT-creator with Qt6, and I have working versions on both wi
 * ffmpeg[nvcodec]
 * nlohmann_json
   
-It also uses my library to wrap ffmpeg (https://github.com/paulmthompson/ffmpeg_wrapper).  Currently, this should be build and installed, and in cmake, the variable "ffmpeg_wrapper_DIR" must be set to the ffmpeg_wrapper install cmake directory
+It also uses my library to wrap ffmpeg (https://github.com/paulmthompson/ffmpeg_wrapper).  Built and install ffmpeg_wrapper whereever you like, and then specify the cmake variable "ffmpeg_wrapper_DIR" for the CameraViewer project to the ffmpeg_wrapper install directory.
+
+Pylon libraries can be downloaded from the basler website here:  
+https://www.baslerweb.com/en/downloads/software-downloads/  
+You must specify the cmake variable BASLER_PATH which points to the required libraries, and BASLER_INCLUDE_PATH.
 
 #### Windows
 
