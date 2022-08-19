@@ -67,7 +67,7 @@ target_link_libraries(CameraViewer PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(CameraViewer PRIVATE Qt${QT_VERSION_MAJOR}::Multimedia)
 target_link_libraries(CameraViewer PRIVATE Qt${QT_VERSION_MAJOR}::MultimediaWidgets)
 
-target_link_libraries(CameraViewer PRIVATE camera)
+target_link_libraries(CameraViewer PRIVATE CameraManager)
 
 set_target_properties(CameraViewer PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
