@@ -26,6 +26,14 @@ QListView {
 
 }
 
+#menubar {
+    background-color: rgb(0,0,0);
+}
+
+#menuFile {
+    background-color: rgb(0,0,0);
+}
+
 #connect_button {
     background-color: rgb(0,0,0);
 }
