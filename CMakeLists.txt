@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(CameraViewer VERSION 0.1 LANGUAGES CXX)
+project(CameraViewer 
+        VERSION 0.1 
+        LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -16,7 +18,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Multimedia)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS MultimediaWidgets)
 
-add_subdirectory(CameraManager)
+add_subdirectory(external)
 
 set(PROJECT_SOURCES
         src/main.cpp
