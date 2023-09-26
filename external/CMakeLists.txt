@@ -5,7 +5,7 @@ include(FetchContent)
 FetchContent_Declare(
   CameraManager
   GIT_REPOSITORY https://github.com/paulmthompson/CameraManager.git
-  GIT_TAG 892f50819a1a4f6852d62a77271f140783c9b87d
+  GIT_TAG 18e33e1dcabef63abf61961ac9666cdd68bb6862
 )
 
 add_subdirectory(CameraManager)
