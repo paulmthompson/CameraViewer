@@ -29,55 +29,55 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    void addCallbacks();
+    void _addCallbacks();
 
-    void drawConnected(Connected_Button_Color color);
-    QGraphicsScene* on_button_scene;
+    void _drawConnected(Connected_Button_Color color);
+    QGraphicsScene* _on_button_scene;
 
-    QGraphicsScene* camera_view_scene;
-    QGraphicsPixmapItem* camera_view_pixmap;
+    QGraphicsScene* _camera_view_scene;
+    QGraphicsPixmapItem* _camera_view_pixmap;
 
-    std::unique_ptr<CameraManager> camManager;
+    std::unique_ptr<CameraManager> _camManager;
 
-    void updateCameraTable();
-    void updateModelandSerial(int cam_num);
+    void _updateCameraTable();
+    void _updateModelandSerial(int cam_num);
 
-    QTimer* timer;
+    QTimer* _timer;
 
-    void acquisitionLoop();
-    void initiateStopSequence();
+    void _acquisitionLoop();
+    void _initiateStopSequence();
 
-    // In recordMode, cameras will save frames that they acquire
-    bool recordMode;
+    // In _recordMode, cameras will save frames that they acquire
+    bool _recordMode;
 
-    bool viewActive;
-    bool softwareTrigger;
-    void turnOnTrigger();
-    void turnOffTrigger();
+    bool _viewActive;
+    bool _softwareTrigger;
+    void _turnOnTrigger();
+    void _turnOffTrigger();
 
-    void updateCanvas(QImage& img);
-    std::vector<uint8_t> img_to_display;
-    int cam_to_display;
+    void _updateCanvas(QImage& img);
+    std::vector<uint8_t> _img_to_display;
+    int _cam_to_display;
 
-    std::vector<int> elapsed_times;
-    int loop_time;
-    int elapsed_times_i;
+    std::vector<int> _elapsed_times;
+    int _loop_time;
+    int _elapsed_times_i;
 
-    std::filesystem::path save_file_path;
-    std::filesystem::path config_path;
+    std::filesystem::path _save_file_path;
+    std::filesystem::path _config_path;
 
-    void updateSaveName(std::filesystem::path path);
+    void _updateSaveName(std::filesystem::path path);
 
 private slots:
-    void addVirtualCamera();
-    void connectCamera();
-    void recordButton();
-    void selectCameraInTable(int row, int column);
-    void viewButton();
-    void triggerCamButton();
-    void savePathButton();
-    void scanForCameras();
-    void loadConfiguration();
+    void _addVirtualCamera();
+    void _connectCamera();
+    void _recordButton();
+    void _selectCameraInTable(int row, int column);
+    void _viewButton();
+    void _triggerCamButton();
+    void _savePathButton();
+    void _scanForCameras();
+    void _loadConfiguration();
 
 };
 

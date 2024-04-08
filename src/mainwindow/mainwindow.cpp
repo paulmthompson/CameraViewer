@@ -22,49 +22,49 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    
+    _addCallbacks();
 
-    addCallbacks();
-
-    on_button_scene = new QGraphicsScene(this);
+    _on_button_scene = new QGraphicsScene(this);
 
     QPainterPath on_button_path;
     on_button_path.addEllipse(0.0,0.0,25.0,25.0);
     on_button_path.setFillRule(Qt::WindingFill);
 
-    on_button_scene->addPath(on_button_path,QPen(Qt::red),QBrush(Qt::red));
-    ui->graphicsView_2->setScene(on_button_scene);
+    _on_button_scene->addPath(on_button_path,QPen(Qt::red),QBrush(Qt::red));
+    ui->graphicsView_2->setScene(_on_button_scene);
     ui->graphicsView_2->show();
 
 
-    camera_view_scene = new QGraphicsScene(this);
+    _camera_view_scene = new QGraphicsScene(this);
 
     QImage myimage = QImage(ui->graphicsView->width(),ui->graphicsView->height(),QImage::Format_Grayscale8);
     myimage.fill(Qt::black);
-    camera_view_pixmap = camera_view_scene->addPixmap(QPixmap::fromImage(myimage));
-    ui->graphicsView->setScene(camera_view_scene);
+    _camera_view_pixmap = _camera_view_scene->addPixmap(QPixmap::fromImage(myimage));
+    ui->graphicsView->setScene(_camera_view_scene);
     ui->graphicsView->show();
 
-    camManager = std::make_unique<CameraManager>();
+    _camManager = std::make_unique<CameraManager>();
     //cams = std::vector<std::unique_ptr<Camera>>(0);
 
-    timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &MainWindow::acquisitionLoop);
-    recordMode = false;
+    _timer = new QTimer(this);
+    connect(_timer, &QTimer::timeout, this, &MainWindow::_acquisitionLoop);
+    _recordMode = false;
 
-    viewActive = true;
-    softwareTrigger = false;
+    _viewActive = true;
+    _softwareTrigger = false;
 
-    img_to_display = std::vector<uint8_t>(480*640);
-    cam_to_display = 0; //Camera to display in the viewer
+    _img_to_display = std::vector<uint8_t>(480*640);
+    _cam_to_display = 0; //Camera to display in the viewer
 
-    loop_time = 40;
+    _loop_time = 40;
 
-    elapsed_times = std::vector<int>(loop_time);
-    elapsed_times_i = 0;
+    _elapsed_times = std::vector<int>(_loop_time);
+    _elapsed_times_i = 0;
 
-    timer->start(this->loop_time);
+    _timer->start(_loop_time);
 
-    updateSaveName(QDir::currentPath().toStdString() + "/" + "test.mp4");
+    _updateSaveName(QDir::currentPath().toStdString() + "/" + "test.mp4");
 
     ui->tableWidget->setColumnCount(3);
     ui->tableWidget->setColumnWidth(0,20);
@@ -77,22 +77,22 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::addCallbacks() {
-    connect(ui->add_virtual_button,SIGNAL(clicked()),this,SLOT(addVirtualCamera()));
-    connect(ui->connect_button,SIGNAL(clicked()),this,SLOT(connectCamera()));
-    connect(ui->start_cam_button,SIGNAL(clicked()),this,SLOT(triggerCamButton()));
-    connect(ui->tableWidget,SIGNAL(cellClicked(int,int)),this,SLOT(selectCameraInTable(int,int)));
-    connect(ui->record_button,SIGNAL(clicked()),this,SLOT(recordButton()));
-    connect(ui->view_button,SIGNAL(clicked()),this,SLOT(viewButton()));
-    connect(ui->change_save_button,SIGNAL(clicked()),this,SLOT(savePathButton()));
-    connect(ui->rescan_button,SIGNAL(clicked()),this,SLOT(scanForCameras()));
-    connect(ui->actionLoad_Configuration,SIGNAL(triggered()),this,SLOT(loadConfiguration()));
+void MainWindow::_addCallbacks() {
+    connect(ui->add_virtual_button,SIGNAL(clicked()),this,SLOT(_addVirtualCamera()));
+    connect(ui->connect_button,SIGNAL(clicked()),this,SLOT(_connectCamera()));
+    connect(ui->start_cam_button,SIGNAL(clicked()),this,SLOT(_triggerCamButton()));
+    connect(ui->tableWidget,SIGNAL(cellClicked(int,int)),this,SLOT(_selectCameraInTable(int,int)));
+    connect(ui->record_button,SIGNAL(clicked()),this,SLOT(_recordButton()));
+    connect(ui->view_button,SIGNAL(clicked()),this,SLOT(_viewButton()));
+    connect(ui->change_save_button,SIGNAL(clicked()),this,SLOT(_savePathButton()));
+    connect(ui->rescan_button,SIGNAL(clicked()),this,SLOT(_scanForCameras()));
+    connect(ui->actionLoad_Configuration,SIGNAL(triggered()),this,SLOT(_loadConfiguration()));
 }
 
-void MainWindow::drawConnected(Connected_Button_Color color) {
+void MainWindow::_drawConnected(Connected_Button_Color color) {
 
 
-    this->on_button_scene->clear();
+    _on_button_scene->clear();
 
     QPainterPath on_button_path;
     on_button_path.addEllipse(0.0,0.0,25.0,25.0);
@@ -100,28 +100,28 @@ void MainWindow::drawConnected(Connected_Button_Color color) {
 
     switch (color) {
         case green:
-            this->on_button_scene->addPath(on_button_path,QPen(Qt::green),QBrush(Qt::green));
+            _on_button_scene->addPath(on_button_path,QPen(Qt::green),QBrush(Qt::green));
             break;
         case red:
-            this->on_button_scene->addPath(on_button_path,QPen(Qt::red),QBrush(Qt::red));
+            _on_button_scene->addPath(on_button_path,QPen(Qt::red),QBrush(Qt::red));
             break;
     }
 
 }
 
-void MainWindow::connectCamera() {
+void MainWindow::_connectCamera() {
 
     QItemSelectionModel *select = ui->tableWidget->selectionModel();
     if (select->hasSelection()) {
         int cam_num =  select->selectedRows()[0].data().toInt();
 
-        if (camManager->connectCamera(cam_num)) {
-            drawConnected(green);
+        if (_camManager->connectCamera(cam_num)) {
+            _drawConnected(green);
             ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("Yes")));
 
             //Our display frame needs to be able to receive the biggest frame possible.
-            if (camManager->getCanvasSize(cam_num) > this->img_to_display.size()) {
-                this->img_to_display.resize(camManager->getCanvasSize(cam_num));
+            if (_camManager->getCanvasSize(cam_num) > _img_to_display.size()) {
+                _img_to_display.resize(_camManager->getCanvasSize(cam_num));
             }
         } else {
             ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("No")));
@@ -129,21 +129,21 @@ void MainWindow::connectCamera() {
     }
 }
 
-void MainWindow::updateModelandSerial(int cam_num) {
+void MainWindow::_updateModelandSerial(int cam_num) {
 
-    ui->CameraModel->setText(QString::fromStdString(this->camManager->getModel(cam_num)));
-    ui->CameraSerial->setText(QString::fromStdString(this->camManager->getSerial(cam_num)));
+    ui->CameraModel->setText(QString::fromStdString(_camManager->getModel(cam_num)));
+    ui->CameraSerial->setText(QString::fromStdString(_camManager->getSerial(cam_num)));
 }
 
-void MainWindow::updateCameraTable() {
+void MainWindow::_updateCameraTable() {
 
     ui->tableWidget->setRowCount(0);
     int current_row = 0;
-    for (int i = 0; i < camManager->numberOfCameras(); i++) {
+    for (int i = 0; i < _camManager->numberOfCameras(); i++) {
         ui->tableWidget->insertRow(ui->tableWidget->rowCount());
         ui->tableWidget->setItem(current_row,0,new QTableWidgetItem(QString::number(current_row)));
-        ui->tableWidget->setItem(current_row,1,new QTableWidgetItem(QString::fromStdString(camManager->getSerial(current_row))));
-        if (camManager->getAttached(current_row)) {
+        ui->tableWidget->setItem(current_row,1,new QTableWidgetItem(QString::fromStdString(_camManager->getSerial(current_row))));
+        if (_camManager->getAttached(current_row)) {
             ui->tableWidget->setItem(current_row,2,new QTableWidgetItem(QString::fromStdString("Yes")));
         } else {
             ui->tableWidget->setItem(current_row,2,new QTableWidgetItem(QString::fromStdString("No")));
@@ -154,34 +154,34 @@ void MainWindow::updateCameraTable() {
     //ui->tableWidget->selectRow(0);
 }
 
-void MainWindow::viewButton() {
-    if (viewActive) {
-        viewActive = false;
+void MainWindow::_viewButton() {
+    if (_viewActive) {
+        _viewActive = false;
     } else {
-        viewActive = true;
+        _viewActive = true;
     }
 }
 
 //Our cameras should first stop collecting frames
-void MainWindow::initiateStopSequence() {
+void MainWindow::_initiateStopSequence() {
 
 
 }
 
-void MainWindow::recordButton() {
+void MainWindow::_recordButton() {
 
-    if (this->recordMode) {
-        this->recordMode = false;
-        camManager->setRecord(false);//Number of acquisition loops before turning off saving and closing mp4 file. This helps if there are some lingering frames to acquire
-        if (this->softwareTrigger) {
-            turnOffTrigger();
+    if (_recordMode) {
+        _recordMode = false;
+        _camManager->setRecord(false);//Number of acquisition loops before turning off saving and closing mp4 file. This helps if there are some lingering frames to acquire
+        if (_softwareTrigger) {
+            _turnOffTrigger();
         }
         ui->view_record_label->setText(QString::fromStdString("View Mode"));
         ui->graphicsView->setStyleSheet("#graphicsView{border: 5px solid black}");
     } else {
 
-        this->recordMode = true;
-        this->camManager->setRecord(true);
+        _recordMode = true;
+        _camManager->setRecord(true);
 
         ui->view_record_label->setText(QString::fromStdString("Record Mode"));
         ui->graphicsView->setStyleSheet("#graphicsView{border: 5px solid red}");
@@ -190,94 +190,94 @@ void MainWindow::recordButton() {
 
 
 // This is the software trigger method
-void MainWindow::triggerCamButton() {
+void MainWindow::_triggerCamButton() {
 
-    if (this->camManager->areCamerasConnected()) {
+    if (_camManager->areCamerasConnected()) {
 
-        if (this->softwareTrigger) {
-            turnOffTrigger();
+        if (_softwareTrigger) {
+            _turnOffTrigger();
         } else {
-            turnOnTrigger();
+            _turnOnTrigger();
         }
     } else {
         std::cout << "No cameras are connected. Cannot acquire frames!" << std::endl;
     }
 }
 
-void MainWindow::turnOnTrigger() {
+void MainWindow::_turnOnTrigger() {
     //Send software trigger signal to camera
    ui->start_cam_button->setText(QString("Stop Camera"));
-   this->softwareTrigger = true;
-   this->camManager->trigger(true);
+    _softwareTrigger = true;
+   _camManager->trigger(true);
 }
 
-void MainWindow::turnOffTrigger() {
+void MainWindow::_turnOffTrigger() {
     //If they are running, we should stop them, but if we are in record mode, we should make sure to also stop the recording in such a way as to not lose frames
     ui->start_cam_button->setText(QString("Trigger Camera"));
-    this->softwareTrigger = false;
-    this->camManager->trigger(false);
+    _softwareTrigger = false;
+    _camManager->trigger(false);
 }
 
-void MainWindow::acquisitionLoop() {
+void MainWindow::_acquisitionLoop() {
 
         QElapsedTimer timer2;
         timer2.start();
 
-        int num_frames_acquired = camManager->acquisitionLoop();
+        int num_frames_acquired = _camManager->acquisitionLoop();
 
-        elapsed_times[elapsed_times_i++] = timer2.elapsed();
+        _elapsed_times[_elapsed_times_i++] = timer2.elapsed();
 
-        if (elapsed_times_i >= elapsed_times.size())
+        if (_elapsed_times_i >= _elapsed_times.size())
         {
-            elapsed_times_i = 0;
-            float mean_time = accumulate(elapsed_times.begin(),elapsed_times.end(),0) / elapsed_times.size();
-            qDebug() << "The loop took" << mean_time << "on average with a loop time of " << this->loop_time;
-            if (this->recordMode) {
+            _elapsed_times_i = 0;
+            float mean_time = accumulate(_elapsed_times.begin(),_elapsed_times.end(),0) / _elapsed_times.size();
+            qDebug() << "The loop took" << mean_time << "on average with a loop time of " << _loop_time;
+            if (_recordMode) {
                 //ui->graphicsView->setStyleSheet("#graphicsView{border: 5px solid black}");
             }
         }
         if (num_frames_acquired > 0 ) {
-            camManager->getImage(this->img_to_display,this->cam_to_display);
+            _camManager->getImage(_img_to_display,_cam_to_display);
             ui->frame_count_save_label->setText(
-                        QString::fromStdString(std::to_string(camManager->getTotalFramesSaved(this->cam_to_display))));
+                QString::fromStdString(std::to_string(_camManager->getTotalFramesSaved(_cam_to_display))));
             ui->frame_count_label->setText(
-                        QString::fromStdString(std::to_string(camManager->getTotalFrames(this->cam_to_display))));
+                QString::fromStdString(std::to_string(_camManager->getTotalFrames(_cam_to_display))));
         }
 
         // Display
-        if (this->viewActive) {
+        if (_viewActive) {
             if (num_frames_acquired > 0) {
 
-                QImage img = QImage(&this->img_to_display[0],
-                        camManager->getCanvasWidth(this->cam_to_display),
-                        camManager->getCanvasHeight(this->cam_to_display),
+                QImage img = QImage(&_img_to_display[0],
+                                    _camManager->getCanvasWidth(_cam_to_display),
+                                    _camManager->getCanvasHeight(_cam_to_display),
                         QImage::Format_Grayscale8);
-                updateCanvas(img);
+                _updateCanvas(img);
             }
         }
 }
 
-void MainWindow::updateCanvas(QImage& img)
+void MainWindow::_updateCanvas(QImage& img)
 {
-    camera_view_pixmap->setPixmap(QPixmap::fromImage(img).scaled(ui->graphicsView->width(),ui->graphicsView->height()));
+    _camera_view_pixmap->setPixmap(QPixmap::fromImage(img).scaled(ui->graphicsView->width(),ui->graphicsView->height()));
 }
 
-void MainWindow::selectCameraInTable(int row, int column) {
+void MainWindow::_selectCameraInTable(int row, int column) {
 
-    updateModelandSerial(row);
+    _updateModelandSerial(row);
 
-    this->cam_to_display = row;
+    _cam_to_display = row;
 
-    if (this->camManager->getAttached(row)) {
-         drawConnected(green);
+    if (_camManager->getAttached(row)) {
+        _drawConnected(green);
     } else {
-        drawConnected(red);
+        _drawConnected(red);
     }
 }
 
-void MainWindow::savePathButton() {
+void MainWindow::_savePathButton() {
 
-    if (! this->recordMode) {
+    if (! _recordMode) {
         auto dial = QFileDialog(this,"Save File Name", QDir::currentPath(),"MP4 (*.mp4)");
 
         QFile file(":/cameraviewer.qss");
@@ -294,48 +294,48 @@ void MainWindow::savePathButton() {
            //                 QDir::currentPath(),
             //                "MP4 (*.mp4)");
         if (!vid_name.isEmpty()) {
-            updateSaveName(vid_name.toStdString());
+            _updateSaveName(vid_name.toStdString());
         }
     } else {
         std::cout << "Can't change filename while you are already saving!" << std::endl;
     }
 }
 
-void MainWindow::updateSaveName(std::filesystem::path path) {
+void MainWindow::_updateSaveName(std::filesystem::path path) {
 
-    this->save_file_path = path;
+    _save_file_path = path;
 
-    camManager->changeFileNames(this->save_file_path);
-    ui->save_name_label->setText(QString::fromStdString(this->save_file_path.filename().string()));
-    ui->save_folder_label->setText(QString::fromStdString(this->save_file_path.parent_path().string()));
+    _camManager->changeFileNames(_save_file_path);
+    ui->save_name_label->setText(QString::fromStdString(_save_file_path.filename().string()));
+    ui->save_folder_label->setText(QString::fromStdString(_save_file_path.parent_path().string()));
 }
 
-void MainWindow::scanForCameras() {
+void MainWindow::_scanForCameras() {
 
-    camManager->scanForCameras();
+    _camManager->scanForCameras();
 
-    updateCameraTable();
+    _updateCameraTable();
 
 }
 
-void MainWindow::addVirtualCamera() {
+void MainWindow::_addVirtualCamera() {
 
-    camManager->addVirtualCamera();
+    _camManager->addVirtualCamera();
 
-    updateCameraTable();
+    _updateCameraTable();
 }
 
-void MainWindow::loadConfiguration() {
+void MainWindow::_loadConfiguration() {
     auto fileName = QFileDialog::getOpenFileName(this,
         tr("Open Configuration File"), QDir::currentPath(), tr("JSON Files (*.json)"));
 
     std::cout << fileName.toStdString() << std::endl;
 
     if (!fileName.isEmpty()) {
-        this->config_path = fileName.toStdString();
+        _config_path = fileName.toStdString();
 
-        camManager->loadConfigurationFile(config_path);
+        _camManager->loadConfigurationFile(_config_path);
 
-        updateCameraTable();
+        _updateCameraTable();
     }
 }
