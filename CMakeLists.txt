@@ -1,8 +1,15 @@
-cmake_minimum_required(VERSION 3.21)
-
+#=============================
+# Preamble
+#=============================
+cmake_minimum_required(VERSION 3.25)
 project(CameraViewer 
         VERSION 0.1 
         LANGUAGES CXX)
+include(CTest)
+
+#=============================
+# Project Wide Setup
+#=============================
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
