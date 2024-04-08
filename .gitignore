@@ -75,3 +75,5 @@ Thumbs.db
 CMakeLists.txt.*
 CMakeLists.txt.user
 .vscode
+
+.idea
