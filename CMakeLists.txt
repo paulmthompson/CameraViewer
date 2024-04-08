@@ -11,6 +11,11 @@ include(CTest)
 # Project Wide Setup
 #=============================
 
+if(NOT APPLE)
+    set(CMAKE_INSTALL_RPATH $ORIGIN)
+endif()
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOUIC ON)
@@ -22,12 +27,20 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(VCPKG_MANIFEST_MODE ON)
 
+#=============================
+# Externally Provided Content
+#=============================
+
+add_subdirectory(dependencies)
+
+#=============================
+# Main Build Targets
+#=============================
+
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Multimedia)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS MultimediaWidgets)
-
-add_subdirectory(external)
 
 set(PROJECT_SOURCES
         src/main.cpp
@@ -37,12 +50,6 @@ set(PROJECT_SOURCES
         cameraviewer.qss
         cameraviewer.qrc
 )
-
-
-if(NOT APPLE)
-    set(CMAKE_INSTALL_RPATH $ORIGIN)
-endif()
-set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(CameraViewer
