@@ -259,7 +259,12 @@ void MainWindow::_acquisitionLoop() {
 
 void MainWindow::_updateCanvas(QImage& img)
 {
-    _camera_view_pixmap->setPixmap(QPixmap::fromImage(img).scaled(ui->graphicsView->width(),ui->graphicsView->height()));
+    _camera_view_pixmap->setPixmap(
+        QPixmap::fromImage(img).scaled(
+            ui->graphicsView->width(),
+            ui->graphicsView->height(),
+            Qt::IgnoreAspectRatio,
+            Qt::SmoothTransformation));
 }
 
 void MainWindow::_selectCameraInTable(int row, int column) {
