@@ -1,0 +1,47 @@
+project:
+  type: website
+
+website:
+  title: "CameraViewer"
+  navbar:
+    collapse-below: lg
+    pinned: true
+    right:
+      - id: intro
+        text: "Introduction"
+        href: index.qmd
+        
+      - text: "Tutorials"
+      
+      - text: "How-to Guides"
+      
+      - text: "Reference Guides"
+        menu:
+          - text: "User Guide"
+            href: user_guide/index.qmd
+          - text: "Developer Guide"
+            href: developer/index.qmd
+            
+      - text: "Background and Concepts"
+        href: concepts/index.qmd
+        
+  sidebar:
+    - title: "User Guide"
+      style: "docked"
+      contents:
+        - user_guide/index.qmd
+        
+    - title: "Developer Guide"
+      style: "docked"
+      contents:
+        - developer/index.qmd
+
+format:
+  html:
+    theme: github-dark
+    smooth-scroll: true
+    css: styles.css
+    toc: true
+
+editor: visual
+
