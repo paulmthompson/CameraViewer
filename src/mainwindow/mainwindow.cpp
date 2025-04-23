@@ -1,44 +1,42 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
-#include <vector>
-#include <memory>
-#include <stdlib.h>
-#include <numeric>
 #include <filesystem>
+#include <memory>
+#include <numeric>
 #include <ostream>
+#include <stdlib.h>
+#include <vector>
 
-#include <QGraphicsPixmapItem>
-#include <QPainterPath>
-#include <QPainter>
-#include <QGraphicsScene>
-#include <QGraphicsPixmapItem>
-#include <QElapsedTimer>
 #include <QDir>
+#include <QElapsedTimer>
 #include <QFileDialog>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsScene>
+#include <QPainter>
+#include <QPainterPath>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-{
+MainWindow::MainWindow(QWidget * parent)
+    : QMainWindow(parent),
+      ui(new Ui::MainWindow) {
     ui->setupUi(this);
-    
+
     _addCallbacks();
 
     _on_button_scene = new QGraphicsScene(this);
 
     QPainterPath on_button_path;
-    on_button_path.addEllipse(0.0,0.0,25.0,25.0);
+    on_button_path.addEllipse(0.0, 0.0, 25.0, 25.0);
     on_button_path.setFillRule(Qt::WindingFill);
 
-    _on_button_scene->addPath(on_button_path,QPen(Qt::red),QBrush(Qt::red));
+    _on_button_scene->addPath(on_button_path, QPen(Qt::red), QBrush(Qt::red));
     ui->graphicsView_2->setScene(_on_button_scene);
     ui->graphicsView_2->show();
 
 
     _camera_view_scene = new QGraphicsScene(this);
 
-    QImage myimage = QImage(ui->graphicsView->width(),ui->graphicsView->height(),QImage::Format_Grayscale8);
+    QImage myimage = QImage(ui->graphicsView->width(), ui->graphicsView->height(), QImage::Format_Grayscale8);
     myimage.fill(Qt::black);
     _camera_view_pixmap = _camera_view_scene->addPixmap(QPixmap::fromImage(myimage));
     ui->graphicsView->setScene(_camera_view_scene);
@@ -54,8 +52,8 @@ MainWindow::MainWindow(QWidget *parent)
     _viewActive = true;
     _softwareTrigger = false;
 
-    _img_to_display = std::vector<uint8_t>(480*640);
-    _cam_to_display = 0; //Camera to display in the viewer
+    _img_to_display = std::vector<uint8_t>(480 * 640);
+    _cam_to_display = 0;//Camera to display in the viewer
 
     _loop_time = 40;
 
@@ -67,26 +65,25 @@ MainWindow::MainWindow(QWidget *parent)
     _updateSaveName(QDir::currentPath().toStdString() + "/" + "test.mp4");
 
     ui->tableWidget->setColumnCount(3);
-    ui->tableWidget->setColumnWidth(0,20);
-    ui->tableWidget->setColumnWidth(1,100);
+    ui->tableWidget->setColumnWidth(0, 20);
+    ui->tableWidget->setColumnWidth(1, 100);
     ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
 }
 
 void MainWindow::_addCallbacks() {
-    connect(ui->add_virtual_button,SIGNAL(clicked()),this,SLOT(_addVirtualCamera()));
-    connect(ui->connect_button,SIGNAL(clicked()),this,SLOT(_connectCamera()));
-    connect(ui->start_cam_button,SIGNAL(clicked()),this,SLOT(_triggerCamButton()));
-    connect(ui->tableWidget,SIGNAL(cellClicked(int,int)),this,SLOT(_selectCameraInTable(int,int)));
-    connect(ui->record_button,SIGNAL(clicked()),this,SLOT(_recordButton()));
-    connect(ui->view_button,SIGNAL(clicked()),this,SLOT(_viewButton()));
-    connect(ui->change_save_button,SIGNAL(clicked()),this,SLOT(_savePathButton()));
-    connect(ui->rescan_button,SIGNAL(clicked()),this,SLOT(_scanForCameras()));
-    connect(ui->actionLoad_Configuration,SIGNAL(triggered()),this,SLOT(_loadConfiguration()));
+    connect(ui->add_virtual_button, SIGNAL(clicked()), this, SLOT(_addVirtualCamera()));
+    connect(ui->connect_button, SIGNAL(clicked()), this, SLOT(_connectCamera()));
+    connect(ui->start_cam_button, SIGNAL(clicked()), this, SLOT(_triggerCamButton()));
+    connect(ui->tableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(_selectCameraInTable(int, int)));
+    connect(ui->record_button, SIGNAL(clicked()), this, SLOT(_recordButton()));
+    connect(ui->view_button, SIGNAL(clicked()), this, SLOT(_viewButton()));
+    connect(ui->change_save_button, SIGNAL(clicked()), this, SLOT(_savePathButton()));
+    connect(ui->rescan_button, SIGNAL(clicked()), this, SLOT(_scanForCameras()));
+    connect(ui->actionLoad_Configuration, SIGNAL(triggered()), this, SLOT(_loadConfiguration()));
 }
 
 void MainWindow::_drawConnected(Connected_Button_Color color) {
@@ -95,36 +92,35 @@ void MainWindow::_drawConnected(Connected_Button_Color color) {
     _on_button_scene->clear();
 
     QPainterPath on_button_path;
-    on_button_path.addEllipse(0.0,0.0,25.0,25.0);
+    on_button_path.addEllipse(0.0, 0.0, 25.0, 25.0);
     on_button_path.setFillRule(Qt::WindingFill);
 
     switch (color) {
         case green:
-            _on_button_scene->addPath(on_button_path,QPen(Qt::green),QBrush(Qt::green));
+            _on_button_scene->addPath(on_button_path, QPen(Qt::green), QBrush(Qt::green));
             break;
         case red:
-            _on_button_scene->addPath(on_button_path,QPen(Qt::red),QBrush(Qt::red));
+            _on_button_scene->addPath(on_button_path, QPen(Qt::red), QBrush(Qt::red));
             break;
     }
-
 }
 
 void MainWindow::_connectCamera() {
 
-    QItemSelectionModel *select = ui->tableWidget->selectionModel();
+    QItemSelectionModel * select = ui->tableWidget->selectionModel();
     if (select->hasSelection()) {
-        int cam_num =  select->selectedRows()[0].data().toInt();
+        int cam_num = select->selectedRows()[0].data().toInt();
 
         if (_camManager->connectCamera(cam_num)) {
             _drawConnected(green);
-            ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("Yes")));
+            ui->tableWidget->setItem(cam_num, 2, new QTableWidgetItem(QString::fromStdString("Yes")));
 
             //Our display frame needs to be able to receive the biggest frame possible.
             if (_camManager->getCanvasSize(cam_num) > _img_to_display.size()) {
                 _img_to_display.resize(_camManager->getCanvasSize(cam_num));
             }
         } else {
-            ui->tableWidget->setItem(cam_num,2,new QTableWidgetItem(QString::fromStdString("No")));
+            ui->tableWidget->setItem(cam_num, 2, new QTableWidgetItem(QString::fromStdString("No")));
         }
     }
 }
@@ -141,12 +137,12 @@ void MainWindow::_updateCameraTable() {
     int current_row = 0;
     for (int i = 0; i < _camManager->numberOfCameras(); i++) {
         ui->tableWidget->insertRow(ui->tableWidget->rowCount());
-        ui->tableWidget->setItem(current_row,0,new QTableWidgetItem(QString::number(current_row)));
-        ui->tableWidget->setItem(current_row,1,new QTableWidgetItem(QString::fromStdString(_camManager->getSerial(current_row))));
+        ui->tableWidget->setItem(current_row, 0, new QTableWidgetItem(QString::number(current_row)));
+        ui->tableWidget->setItem(current_row, 1, new QTableWidgetItem(QString::fromStdString(_camManager->getSerial(current_row))));
         if (_camManager->getAttached(current_row)) {
-            ui->tableWidget->setItem(current_row,2,new QTableWidgetItem(QString::fromStdString("Yes")));
+            ui->tableWidget->setItem(current_row, 2, new QTableWidgetItem(QString::fromStdString("Yes")));
         } else {
-            ui->tableWidget->setItem(current_row,2,new QTableWidgetItem(QString::fromStdString("No")));
+            ui->tableWidget->setItem(current_row, 2, new QTableWidgetItem(QString::fromStdString("No")));
         }
         current_row++;
     }
@@ -164,8 +160,6 @@ void MainWindow::_viewButton() {
 
 //Our cameras should first stop collecting frames
 void MainWindow::_initiateStopSequence() {
-
-
 }
 
 void MainWindow::_recordButton() {
@@ -206,9 +200,9 @@ void MainWindow::_triggerCamButton() {
 
 void MainWindow::_turnOnTrigger() {
     //Send software trigger signal to camera
-   ui->start_cam_button->setText(QString("Stop Camera"));
+    ui->start_cam_button->setText(QString("Stop Camera"));
     _softwareTrigger = true;
-   _camManager->trigger(true);
+    _camManager->trigger(true);
 }
 
 void MainWindow::_turnOffTrigger() {
@@ -220,51 +214,49 @@ void MainWindow::_turnOffTrigger() {
 
 void MainWindow::_acquisitionLoop() {
 
-        QElapsedTimer timer2;
-        timer2.start();
+    QElapsedTimer timer2;
+    timer2.start();
 
-        int num_frames_acquired = _camManager->acquisitionLoop();
+    int num_frames_acquired = _camManager->acquisitionLoop();
 
-        _elapsed_times[_elapsed_times_i++] = timer2.elapsed();
+    _elapsed_times[_elapsed_times_i++] = timer2.elapsed();
 
-        if (_elapsed_times_i >= _elapsed_times.size())
-        {
-            _elapsed_times_i = 0;
-            float mean_time = accumulate(_elapsed_times.begin(),_elapsed_times.end(),0) / _elapsed_times.size();
-            qDebug() << "The loop took" << mean_time << "on average with a loop time of " << _loop_time;
-            if (_recordMode) {
-                //ui->graphicsView->setStyleSheet("#graphicsView{border: 5px solid black}");
-            }
+    if (_elapsed_times_i >= _elapsed_times.size()) {
+        _elapsed_times_i = 0;
+        float mean_time = accumulate(_elapsed_times.begin(), _elapsed_times.end(), 0) / _elapsed_times.size();
+        qDebug() << "The loop took" << mean_time << "on average with a loop time of " << _loop_time;
+        if (_recordMode) {
+            //ui->graphicsView->setStyleSheet("#graphicsView{border: 5px solid black}");
         }
-        if (num_frames_acquired > 0 ) {
-            _camManager->getImage(_img_to_display,_cam_to_display);
-            ui->frame_count_save_label->setText(
+    }
+    if (num_frames_acquired > 0) {
+        _camManager->getImage(_img_to_display, _cam_to_display);
+        ui->frame_count_save_label->setText(
                 QString::fromStdString(std::to_string(_camManager->getTotalFramesSaved(_cam_to_display))));
-            ui->frame_count_label->setText(
+        ui->frame_count_label->setText(
                 QString::fromStdString(std::to_string(_camManager->getTotalFrames(_cam_to_display))));
-        }
+    }
 
-        // Display
-        if (_viewActive) {
-            if (num_frames_acquired > 0) {
+    // Display
+    if (_viewActive) {
+        if (num_frames_acquired > 0) {
 
-                QImage img = QImage(&_img_to_display[0],
-                                    _camManager->getCanvasWidth(_cam_to_display),
-                                    _camManager->getCanvasHeight(_cam_to_display),
-                        QImage::Format_Grayscale8);
-                _updateCanvas(img);
-            }
+            QImage img = QImage(&_img_to_display[0],
+                                _camManager->getCanvasWidth(_cam_to_display),
+                                _camManager->getCanvasHeight(_cam_to_display),
+                                QImage::Format_Grayscale8);
+            _updateCanvas(img);
         }
+    }
 }
 
-void MainWindow::_updateCanvas(QImage& img)
-{
+void MainWindow::_updateCanvas(QImage & img) {
     _camera_view_pixmap->setPixmap(
-        QPixmap::fromImage(img).scaled(
-            ui->graphicsView->width(),
-            ui->graphicsView->height(),
-            Qt::IgnoreAspectRatio,
-            Qt::SmoothTransformation));
+            QPixmap::fromImage(img).scaled(
+                    ui->graphicsView->width(),
+                    ui->graphicsView->height(),
+                    Qt::IgnoreAspectRatio,
+                    Qt::SmoothTransformation));
 }
 
 void MainWindow::_selectCameraInTable(int row, int column) {
@@ -282,22 +274,22 @@ void MainWindow::_selectCameraInTable(int row, int column) {
 
 void MainWindow::_savePathButton() {
 
-    if (! _recordMode) {
-        auto dial = QFileDialog(this,"Save File Name", QDir::currentPath(),"MP4 (*.mp4)");
+    if (!_recordMode) {
+        auto dial = QFileDialog(this, "Save File Name", QDir::currentPath(), "MP4 (*.mp4)");
 
         QFile file(":/cameraviewer.qss");
         file.open(QFile::ReadOnly);
-        QString styleSheet { QLatin1String(file.readAll()) };
+        QString styleSheet{QLatin1String(file.readAll())};
         //dial.setStyleSheet(styleSheet);
         dial.setStyleSheet("QPushButton { background-color: red }");
 
-        QString vid_name =  dial.getSaveFileName();
+        QString vid_name = dial.getSaveFileName();
 
         //auto dial = QFileDialog::getSaveFileName(
-         //                   this,
-          //                  "Save File Name",
-           //                 QDir::currentPath(),
-            //                "MP4 (*.mp4)");
+        //                   this,
+        //                  "Save File Name",
+        //                 QDir::currentPath(),
+        //                "MP4 (*.mp4)");
         if (!vid_name.isEmpty()) {
             _updateSaveName(vid_name.toStdString());
         }
@@ -320,7 +312,6 @@ void MainWindow::_scanForCameras() {
     _camManager->scanForCameras();
 
     _updateCameraTable();
-
 }
 
 void MainWindow::_addVirtualCamera() {
@@ -332,7 +323,7 @@ void MainWindow::_addVirtualCamera() {
 
 void MainWindow::_loadConfiguration() {
     auto fileName = QFileDialog::getOpenFileName(this,
-        tr("Open Configuration File"), QDir::currentPath(), tr("JSON Files (*.json)"));
+                                                 tr("Open Configuration File"), QDir::currentPath(), tr("JSON Files (*.json)"));
 
     std::cout << fileName.toStdString() << std::endl;
 

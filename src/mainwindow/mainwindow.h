@@ -1,48 +1,50 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <vector>
-#include <memory>
 #include <filesystem>
+#include <memory>
+#include <vector>
 
-#include <QMainWindow>
-#include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
+#include <QGraphicsScene>
+#include <QMainWindow>
 #include <QTimer>
 
 #include "camera.hpp"
 #include "cameramanager.hpp"
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+namespace Ui {
+class MainWindow;
+}
 QT_END_NAMESPACE
 
-enum Connected_Button_Color {red, green};
+enum Connected_Button_Color { red,
+                              green };
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(QWidget * parent = nullptr);
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow * ui;
     void _addCallbacks();
 
     void _drawConnected(Connected_Button_Color color);
-    QGraphicsScene* _on_button_scene;
+    QGraphicsScene * _on_button_scene;
 
-    QGraphicsScene* _camera_view_scene;
-    QGraphicsPixmapItem* _camera_view_pixmap;
+    QGraphicsScene * _camera_view_scene;
+    QGraphicsPixmapItem * _camera_view_pixmap;
 
     std::unique_ptr<CameraManager> _camManager;
 
     void _updateCameraTable();
     void _updateModelandSerial(int cam_num);
 
-    QTimer* _timer;
+    QTimer * _timer;
 
     void _acquisitionLoop();
     void _initiateStopSequence();
@@ -55,7 +57,7 @@ private:
     void _turnOnTrigger();
     void _turnOffTrigger();
 
-    void _updateCanvas(QImage& img);
+    void _updateCanvas(QImage & img);
     std::vector<uint8_t> _img_to_display;
     int _cam_to_display;
 
@@ -78,9 +80,7 @@ private slots:
     void _savePathButton();
     void _scanForCameras();
     void _loadConfiguration();
-
 };
 
 
-
-#endif // MAINWINDOW_H
+#endif// MAINWINDOW_H
