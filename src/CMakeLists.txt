@@ -11,6 +11,7 @@ set(PROJECT_SOURCES
         mainwindow/mainwindow.ui
         cameraviewer.qss
         cameraviewer.qrc
+        color_scheme.hpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
