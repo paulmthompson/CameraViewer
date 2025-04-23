@@ -75,15 +75,15 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::_addCallbacks() {
-    connect(ui->add_virtual_button, SIGNAL(clicked()), this, SLOT(_addVirtualCamera()));
-    connect(ui->connect_button, SIGNAL(clicked()), this, SLOT(_connectCamera()));
-    connect(ui->start_cam_button, SIGNAL(clicked()), this, SLOT(_triggerCamButton()));
+    connect(ui->add_virtual_button, &QPushButton::clicked, this, &MainWindow::_addVirtualCamera);
+    connect(ui->connect_button, &QPushButton::clicked, this, &MainWindow::_connectCamera);
+    connect(ui->start_cam_button, &QPushButton::clicked, this, &MainWindow::_triggerCamButton);
     connect(ui->tableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(_selectCameraInTable(int, int)));
-    connect(ui->record_button, SIGNAL(clicked()), this, SLOT(_recordButton()));
-    connect(ui->view_button, SIGNAL(clicked()), this, SLOT(_viewButton()));
-    connect(ui->change_save_button, SIGNAL(clicked()), this, SLOT(_savePathButton()));
-    connect(ui->rescan_button, SIGNAL(clicked()), this, SLOT(_scanForCameras()));
-    connect(ui->actionLoad_Configuration, SIGNAL(triggered()), this, SLOT(_loadConfiguration()));
+    connect(ui->record_button, &QPushButton::clicked, this, &MainWindow::_recordButton);
+    connect(ui->view_button, &QPushButton::clicked, this, &MainWindow::_viewButton);
+    connect(ui->change_save_button, &QPushButton::clicked, this, &MainWindow::_savePathButton);
+    connect(ui->rescan_button, &QPushButton::clicked, this, &MainWindow::_scanForCameras);
+    connect(ui->actionLoad_Configuration, &QAction::triggered, this, &MainWindow::_loadConfiguration);
 }
 
 void MainWindow::_drawConnected(Connected_Button_Color color) {
