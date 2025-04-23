@@ -5,6 +5,7 @@
 #include <QApplication>
 #include <QFile>
 #include <QPalette>
+#include <qstylefactory.h>
 
 int main(int argc, char *argv[])
 {
