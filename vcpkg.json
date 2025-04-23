@@ -3,6 +3,9 @@
     "version-string": "0.0.1",
     "dependencies": [
         {
+            "name": "boost-circular-buffer"
+        },
+        {
             "name": "ffmpeg",
             "default-features": true,
             "features": ["nvcodec"]
@@ -13,6 +16,10 @@
     "builtin-baseline": "3508985146f1b1d248c67ead13f8f54be5b4f5da",
     "$comment": "hash corresponds to 2024.08.23",
     "overrides": [
+            {
+                "name": "boost-circular-buffer",
+                "version": "1.85.0"
+            },
             {
                 "name": "ffmpeg",
                 "version": "6.1.1#9"
