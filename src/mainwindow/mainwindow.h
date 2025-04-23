@@ -68,6 +68,9 @@ private:
     std::filesystem::path _save_file_path;
     std::filesystem::path _config_path;
 
+    std::vector<std::filesystem::path> _saved_file_paths;
+    bool _checkForOverwrite();
+
     void _updateSaveName(std::filesystem::path path);
 
 private slots:

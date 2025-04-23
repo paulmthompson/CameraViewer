@@ -13,6 +13,7 @@
 #include <QFileDialog>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
+#include <QMessageBox>
 #include <QPainter>
 #include <QPainterPath>
 
@@ -165,6 +166,7 @@ void MainWindow::_initiateStopSequence() {
 void MainWindow::_recordButton() {
 
     if (_recordMode) {
+        // Stopping recording
         _recordMode = false;
         _camManager->setRecord(false);//Number of acquisition loops before turning off saving and closing mp4 file. This helps if there are some lingering frames to acquire
         if (_softwareTrigger) {
@@ -172,16 +174,41 @@ void MainWindow::_recordButton() {
         }
         ui->view_record_label->setText(QString::fromStdString("View Mode"));
         ui->graphicsView->setStyleSheet("#graphicsView{border: 5px solid black}");
+
+        _saved_file_paths.push_back(_save_file_path);
     } else {
 
-        _recordMode = true;
-        _camManager->setRecord(true);
+        if (_checkForOverwrite()) {
 
-        ui->view_record_label->setText(QString::fromStdString("Record Mode"));
-        ui->graphicsView->setStyleSheet("#graphicsView{border: 5px solid red}");
+            _recordMode = true;
+            _camManager->setRecord(true);
+
+            ui->view_record_label->setText(QString::fromStdString("Record Mode"));
+            ui->graphicsView->setStyleSheet("#graphicsView{border: 5px solid red}");
+        }
     }
 }
 
+bool MainWindow::_checkForOverwrite() {
+    // Check if current save path is in our list of saved files
+    auto it = std::find(_saved_file_paths.begin(), _saved_file_paths.end(), _save_file_path);
+    if (it != _saved_file_paths.end()) {
+        // Found a match - show warning dialog
+        QMessageBox overwriteBox;
+        overwriteBox.setWindowTitle("Warning: File Exists");
+        overwriteBox.setText("The file '" + QString::fromStdString(_save_file_path.filename().string()) +
+                             "' has already been used in this session.\n\nDo you want to overwrite it?");
+        overwriteBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        overwriteBox.setDefaultButton(QMessageBox::No);
+        overwriteBox.setIcon(QMessageBox::Warning);
+
+        int response = overwriteBox.exec();
+        return (response == QMessageBox::Yes);
+    }
+
+    // No match found, no overwrite will occur
+    return true;
+}
 
 // This is the software trigger method
 void MainWindow::_triggerCamButton() {
