@@ -1,12 +1,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
-#include <filesystem>
-#include <memory>
-#include <numeric>
-#include <ostream>
-#include <stdlib.h>
-#include <vector>
+#include "cameramanager.hpp"
 
 #include <QDir>
 #include <QElapsedTimer>
@@ -16,6 +11,13 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QPainterPath>
+
+#include <filesystem>
+#include <memory>
+#include <numeric>
+#include <ostream>
+#include <stdlib.h>
+#include <vector>
 
 MainWindow::MainWindow(QWidget * parent)
     : QMainWindow(parent),

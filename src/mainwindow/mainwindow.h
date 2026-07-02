@@ -1,17 +1,16 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <filesystem>
-#include <memory>
-#include <vector>
-
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
 #include <QMainWindow>
 #include <QTimer>
 
-#include "camera.hpp"
-#include "cameramanager.hpp"
+#include <filesystem>
+#include <memory>
+#include <vector>
+
+class CameraManager;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
